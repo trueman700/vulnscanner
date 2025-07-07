@@ -1,0 +1,124 @@
+2025-07-03 08:24:17,920 - ERROR - OpenVAS initialization failed: OpenVASClient.__init__() got an unexpected keyword argument 'host'
+2025-07-03 08:24:47,495 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-03 08:26:35,857 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-03 08:26:35,857 - INFO - Running supplemental checks...
+2025-07-03 08:29:01,370 - WARNING - OpenVAS client not available
+2025-07-03 08:29:46,143 - WARNING - OpenVAS client not available
+2025-07-03 08:29:55,916 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-03 08:31:14,077 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-03 08:31:14,077 - INFO - Running supplemental checks...
+2025-07-03 08:32:38,262 - WARNING - OpenVAS client not available
+2025-07-03 08:34:55,997 - ERROR - OpenVAS initialization failed: OpenVASClient.__init__() got an unexpected keyword argument 'host'
+2025-07-03 08:39:30,510 - ERROR - OpenVAS initialization failed: OpenVASClient.__init__() got an unexpected keyword argument 'host'
+2025-07-03 12:58:00,624 - INFO - Connecting to OpenVAS at localhost:9390
+2025-07-03 12:58:00,625 - ERROR - Connection failed: [Errno 111] Connection refused
+2025-07-03 12:58:00,626 - ERROR - OpenVAS initialization failed: [Errno 111] Connection refused
+2025-07-03 13:05:02,534 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-03 13:06:41,230 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-03 13:06:41,231 - INFO - Running supplemental checks...
+2025-07-03 13:55:06,634 - INFO - Connecting to OpenVAS at localhost:9390
+2025-07-03 13:55:06,636 - ERROR - Connection failed: [Errno 111] Connection refused
+2025-07-03 13:55:06,636 - ERROR - OpenVAS initialization failed: [Errno 111] Connection refused
+2025-07-03 13:55:12,695 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-03 13:57:07,676 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-03 13:57:07,677 - INFO - Running supplemental checks...
+2025-07-03 14:03:11,198 - INFO - Connecting to OpenVAS at localhost:9390
+2025-07-03 14:03:11,200 - ERROR - Connection failed: [Errno 111] Connection refused
+2025-07-03 14:03:11,200 - ERROR - OpenVAS initialization failed: [Errno 111] Connection refused
+2025-07-03 14:04:22,441 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-03 14:06:03,253 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-03 14:06:03,254 - INFO - Running supplemental checks...
+2025-07-05 08:34:56,394 - INFO - Connecting to OpenVAS at localhost:9390
+2025-07-05 08:34:56,410 - ERROR - Connection failed: [Errno 111] Connection refused
+2025-07-05 08:34:56,410 - ERROR - OpenVAS initialization failed: [Errno 111] Connection refused
+2025-07-05 08:35:06,191 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-05 08:36:32,346 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-05 08:36:32,351 - INFO - Running supplemental checks...
+2025-07-05 08:59:59,929 - INFO - OpenVAS client initialized successfully
+2025-07-05 09:00:08,376 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-05 09:01:27,518 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-05 09:01:27,519 - INFO - Starting OpenVAS scan...
+2025-07-05 09:01:27,520 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:01:27,521 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:01:27,521 - INFO - Running supplemental checks...
+2025-07-05 09:03:16,767 - ERROR - Connection failed: [Errno 111] Connection refused
+2025-07-05 09:03:16,768 - ERROR - OpenVAS initialization failed: Could not connect: [Errno 111] Connection refused
+2025-07-05 09:06:13,296 - INFO - Connecting to OpenVAS at localhost:9390
+2025-07-05 09:06:13,298 - WARNING - Authentication attempt failed: [Errno 111] Connection refused
+2025-07-05 09:06:13,298 - ERROR - Initialization failed: Authentication failed
+2025-07-05 09:06:13,298 - ERROR - OpenVAS initialization failed: Authentication failed
+2025-07-05 09:06:42,554 - INFO - Connecting to OpenVAS at localhost:9390
+2025-07-05 09:06:42,555 - WARNING - Authentication attempt failed: [Errno 111] Connection refused
+2025-07-05 09:06:42,556 - ERROR - Initialization failed: Authentication failed
+2025-07-05 09:06:42,556 - ERROR - OpenVAS initialization failed: Authentication failed
+2025-07-05 09:06:50,120 - INFO - OpenVAS client initialized successfully
+2025-07-05 09:07:02,076 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-05 09:10:54,284 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-05 09:10:54,285 - INFO - Starting OpenVAS scan...
+2025-07-05 09:10:54,285 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:10:54,286 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:10:54,286 - INFO - Running supplemental checks...
+2025-07-05 09:13:59,831 - ERROR - OpenVAS initialization failed: Could not establish connection using any method
+2025-07-05 09:14:36,434 - ERROR - OpenVAS initialization failed: Could not establish connection using any method
+2025-07-05 09:14:48,203 - INFO - OpenVAS client initialized successfully
+2025-07-05 09:26:02,269 - INFO - OpenVAS client initialized successfully
+2025-07-05 09:26:07,901 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-05 09:27:45,150 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-05 09:27:45,150 - INFO - Starting OpenVAS scan...
+2025-07-05 09:27:45,151 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:27:45,152 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:27:45,152 - INFO - Running supplemental checks...
+2025-07-05 09:42:56,794 - INFO - OpenVAS client initialized successfully
+2025-07-05 09:43:03,278 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-05 09:44:29,825 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-05 09:44:29,826 - INFO - Starting OpenVAS scan...
+2025-07-05 09:44:29,827 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:44:29,827 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:44:29,828 - INFO - Running supplemental checks...
+2025-07-05 09:44:51,311 - INFO - OpenVAS client initialized successfully
+2025-07-05 09:45:08,133 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-05 09:46:46,874 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-05 09:46:46,875 - INFO - Starting OpenVAS scan...
+2025-07-05 09:46:46,876 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:46:46,876 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-05 09:46:46,877 - INFO - Running supplemental checks...
+2025-07-07 09:14:03,056 - INFO - OpenVAS client initialized successfully
+2025-07-07 09:14:11,786 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-07 09:18:08,913 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-07 09:18:08,914 - INFO - Starting OpenVAS scan...
+2025-07-07 09:18:08,914 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 09:18:08,915 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 09:18:08,915 - INFO - Running supplemental checks...
+2025-07-07 13:21:49,894 - INFO - OpenVAS client initialized successfully
+2025-07-07 13:22:07,791 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-07 13:23:03,545 - WARNING - Vulners query failed: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=Apache%20httpd%202.4.58 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f3388286db0>: Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:23:03,549 - WARNING - NVD query failed: HTTPSConnectionPool(host='services.nvd.nist.gov', port=443): Max retries exceeded with url: /rest/json/cves/1.0?keyword=Apache%20httpd%202.4.58 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f33882b5a00>: Failed to resolve 'services.nvd.nist.gov' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:23:03,552 - WARNING - Vulners query failed: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=CUPS%202.4 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f33882b5160>: Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:23:03,556 - WARNING - NVD query failed: HTTPSConnectionPool(host='services.nvd.nist.gov', port=443): Max retries exceeded with url: /rest/json/cves/1.0?keyword=CUPS%202.4 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f3388287c50>: Failed to resolve 'services.nvd.nist.gov' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:23:03,558 - WARNING - Vulners query failed: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=PostgreSQL%20DB%209.6.0%20or%20later (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f33882b5760>: Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:23:03,561 - WARNING - NVD query failed: HTTPSConnectionPool(host='services.nvd.nist.gov', port=443): Max retries exceeded with url: /rest/json/cves/1.0?keyword=PostgreSQL%20DB%209.6.0%20or%20later (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f33882b5af0>: Failed to resolve 'services.nvd.nist.gov' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:23:03,561 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-07 13:23:03,561 - INFO - Starting OpenVAS scan...
+2025-07-07 13:23:03,561 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 13:23:03,561 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 13:23:03,562 - INFO - Running supplemental checks...
+2025-07-07 13:37:58,565 - INFO - OpenVAS client initialized successfully
+2025-07-07 13:38:06,593 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-07 13:38:58,920 - WARNING - Vulners query failed: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=Apache%20httpd%202.4.58 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2740e7db20>: Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:38:58,928 - WARNING - NVD query failed: HTTPSConnectionPool(host='services.nvd.nist.gov', port=443): Max retries exceeded with url: /rest/json/cves/1.0?keyword=Apache%20httpd%202.4.58 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2740ead850>: Failed to resolve 'services.nvd.nist.gov' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:38:58,939 - WARNING - Vulners query failed: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=CUPS%202.4 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2740eacfe0>: Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:38:58,943 - WARNING - NVD query failed: HTTPSConnectionPool(host='services.nvd.nist.gov', port=443): Max retries exceeded with url: /rest/json/cves/1.0?keyword=CUPS%202.4 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2740e7fdd0>: Failed to resolve 'services.nvd.nist.gov' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:38:58,947 - WARNING - Vulners query failed: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=PostgreSQL%20DB%209.6.0%20or%20later (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2740ead1f0>: Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:38:58,951 - WARNING - NVD query failed: HTTPSConnectionPool(host='services.nvd.nist.gov', port=443): Max retries exceeded with url: /rest/json/cves/1.0?keyword=PostgreSQL%20DB%209.6.0%20or%20later (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2740eadac0>: Failed to resolve 'services.nvd.nist.gov' ([Errno -3] Temporary failure in name resolution)"))
+2025-07-07 13:38:58,951 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-07 13:38:58,951 - INFO - Starting OpenVAS scan...
+2025-07-07 13:38:58,952 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 13:38:58,952 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 13:38:58,952 - INFO - Running supplemental checks...
+2025-07-07 13:40:08,795 - INFO - OpenVAS client initialized successfully
+2025-07-07 13:40:14,682 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-07 13:41:54,316 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-07 13:41:54,317 - INFO - Starting OpenVAS scan...
+2025-07-07 13:41:54,317 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 13:41:54,317 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-07 13:41:54,317 - INFO - Running supplemental checks...

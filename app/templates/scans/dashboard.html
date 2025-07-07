@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Recent Scans</h2>
+        <div class="list-group">
+            {% for scan in scans %}
+            <a href="{{ url_for('scans.scan_details', scan_id=scan.id) }}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ scan.target }}</h5>
+                    <small>{{ scan.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+                <p class="mb-1">Scan type: {{ scan.scan_type }}</p>
+                <span class="badge badge-{{ 'success' if scan.status == 'completed' else 'warning' if scan.status == 'running' else 'danger' }}">
+                    {{ scan.status }}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <a href="{{ url_for('scans.new_scan') }}" class="btn btn-primary btn-block">New Scan</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

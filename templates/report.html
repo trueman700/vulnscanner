@@ -1,0 +1,34 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Vulnerability Report</title>
+        <style>
+            .critical { color: red; }
+            .high { color: orange; }
+            .medium { color: yellow; }
+        </style>
+    </head>
+    <body>
+        <h1>Vulnerability Report</h1>
+        <table border="1">
+            <tr>
+                <th>Host</th>
+                <th>Service</th>
+                <th>CVE</th>
+                <th>Risk Score</th>
+                <th>Remediation</th>
+            </tr>
+            {% for vuln in vulnerabilities %}
+            <tr class="{{ 'critical' if vuln.composite_score > 8 else 'high' if vuln.composite_score > 5 else 'medium' }}">
+                <td>{{ vuln.host }}:{{ vuln.port }}</td>
+                <td>{{ vuln.service }}</td>
+                <td>{{ vuln.cve }} ({{ vuln.cvss }})</td>
+                <td>{{ "%.1f"|format(vuln.composite_score) }}</td>
+                <td>{{ vuln.recommendation }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+    </html>
+    

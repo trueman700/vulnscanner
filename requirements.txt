@@ -1,0 +1,42 @@
+### Core Security Scanning ###
+python-nmap
+python-gvm
+requests
+urllib3
+dnspython
+
+### Vulnerability Analysis ###
+vulners
+nvdlib
+
+### PDF Reporting ###
+fpdf2
+reportlab
+pypdf
+
+### Data Visualization ###
+matplotlib
+seaborn
+
+### Network Security ###
+scapy
+paramiko
+impacket
+
+### CLI & Console ###
+rich
+python-dotenv
+
+### Data Processing ###
+pandas
+numpy
+lxml
+
+### Development ###
+pytest
+pytest-cov
+black
+bandit
+safety
+shodan 
+flask

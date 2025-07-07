@@ -1,0 +1,42 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nmap
+        
+    - name: Install Python dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+        
+    - name: Run unit tests
+      run: |
+        pytest tests/unit -v
+        
+    - name: Run integration tests
+      run: |
+        pytest tests/integration -v
+      env:
+        CI: "true"  # Skip network-dependent tests in CI
+        
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
