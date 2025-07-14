@@ -1,0 +1,55 @@
+Metadata-Version: 2.3
+Name: vulners
+Version: 3.0.5
+Summary: Python library and command-line utility for Vulners (https://vulners.com)
+Keywords: security,network,vulners,vulnerability,CVE
+Author: Vulners Team
+Requires-Python: >=3.10
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Version Control
+Classifier: Topic :: Utilities
+Requires-Dist: httpx (>=0.28.1,<0.29.0)
+Requires-Dist: orjson (>=3.10.18,<4.0.0)
+Requires-Dist: pydantic (>=2.11.4,<3.0.0)
+Description-Content-Type: text/markdown
+
+# [Vulners API v3](https://vulners.com) Python wrapper
+
+
+# Description
+Python 3 library for the [Vulners Database](https://vulners.com).
+It provides *search, data retrieval, archive and vulnerability scanning* API's for the integration purposes.
+With this library you can create powerful security tools and get access to the world largest security database.
+
+## How to install
+
+Package is available with [PyPI](https://pypi.python.org/pypi) 
+
+You can use pip for the installation
+
+```bash
+pip install -U vulners
+```
+
+## Obtaining Vulners API key
+
+Please, register at [Vulners website](https://vulners.com).
+Go to the personal menu by clicking at your name at the right top corner.
+Follow "API KEYS" tab.
+Generate API key with scope "api" and use it with the library.
+
+# Documentation
+The full API methods description, usage examples, and integration guide are available in the official documentation: [API Reference](https://vulners.com/docs/api_reference/api/).
+
+

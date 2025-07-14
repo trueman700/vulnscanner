@@ -122,3 +122,40 @@
 2025-07-07 13:41:54,317 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
 2025-07-07 13:41:54,317 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
 2025-07-07 13:41:54,317 - INFO - Running supplemental checks...
+2025-07-14 09:50:02,652 - INFO - OpenVAS client initialized successfully
+2025-07-14 09:50:10,689 - INFO - OpenVAS client initialized successfully
+2025-07-14 09:50:16,255 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 09:51:51,811 - INFO - Performing enhanced analysis for 127.0.0.0
+2025-07-14 09:51:51,813 - INFO - Starting OpenVAS scan...
+2025-07-14 09:51:51,814 - ERROR - No valid targets provided
+2025-07-14 09:51:51,814 - INFO - Running supplemental checks...
+2025-07-14 10:25:39,911 - WARNING - GEMINI_API_KEY environment variable not set. Gemini AI features will be disabled.
+2025-07-14 10:25:41,100 - INFO - OpenVAS client initialized successfully
+2025-07-14 10:25:41,100 - INFO - Starting scan for target: 127.0.0.1 with type: hybrid, report format: console
+2025-07-14 10:25:41,101 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 10:27:32,420 - INFO - Scan interrupted by user
+2025-07-14 10:33:10,468 - WARNING - GEMINI_API_KEY environment variable not set. Gemini AI features will be disabled.
+2025-07-14 10:33:10,894 - INFO - OpenVAS client initialized successfully
+2025-07-14 10:33:10,896 - INFO - Starting scan for target: 127.0.0.1 with type: hybrid, report format: pdf
+2025-07-14 10:33:10,900 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 10:34:52,515 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-14 10:34:52,516 - INFO - Starting OpenVAS scan...
+2025-07-14 10:34:52,517 - ERROR - Connection failed: 'GMP' object has no attribute 'authenticate'
+2025-07-14 10:34:52,518 - ERROR - Scan setup failed: 'GMP' object has no attribute 'authenticate'
+2025-07-14 10:34:52,518 - INFO - Running supplemental checks...
+2025-07-14 10:34:53,028 - INFO - Scan completed successfully. Generating report...
+2025-07-14 10:34:54,511 - INFO - PDF report generated: scan_report_scan_20250714_103310.pdf
+2025-07-14 10:46:59,310 - WARNING - GEMINI_API_KEY environment variable not set. Gemini AI features will be disabled.
+2025-07-14 10:46:59,509 - ERROR - OpenVAS client initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 10:46:59,509 - ERROR - OpenVAS initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 10:46:59,509 - INFO - Starting scan for target: 127.0.0.1 with type: hybrid, report format: pdf
+2025-07-14 10:46:59,510 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 10:47:26,782 - INFO - Scan interrupted by user
+2025-07-14 11:50:59,688 - INFO - Gemini AI model initialized successfully.
+2025-07-14 11:51:00,292 - ERROR - OpenVAS client initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 11:51:00,293 - ERROR - OpenVAS initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 11:51:00,293 - INFO - Starting scan for target: 127.0.0.1 with type: hybrid, report format: console
+2025-07-14 11:51:00,294 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 11:53:14,851 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-14 11:53:14,852 - INFO - Running supplemental checks...
+2025-07-14 11:53:20,239 - INFO - Scan completed successfully. Generating report...

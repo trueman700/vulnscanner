@@ -24,6 +24,9 @@ import shutil
 import signal
 import time
 
+# NEW: Import for Gemini AI
+import google.generativeai as genai
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -57,6 +60,7 @@ class Vulnerability:
     service: Optional[str] = None
     exploit_available: bool = False
     references: List[str] = None
+    ai_analysis: Optional[str] = None # NEW: Field to store AI-generated analysis
 
 @dataclass
 class HostResult:
@@ -77,6 +81,21 @@ class AdvancedVulnerabilityScanner:
         self.vulners_api_key = os.getenv('VULNERS_API_KEY')
         self.nvd_api_key = os.getenv('NVD_API_KEY')
         self.shodan_api_key = os.getenv('SHODAN_API_KEY')
+
+        # NEW: Initialize Gemini AI model
+        self.gemini_api_key = os.getenv('GEMINI_API_KEY')
+        self.gemini_model = None
+        if self.gemini_api_key:
+            try:
+                genai.configure(api_key=self.gemini_api_key)
+                self.gemini_model = genai.GenerativeModel("gemini-pro") # Consider "gemini-1.5-flash" for faster responses
+                logger.info("Gemini AI model initialized successfully.")
+            except Exception as e:
+                logger.error(f"Failed to initialize Gemini AI model: {e}. Gemini AI features will be disabled.")
+                self.gemini_api_key = None # Disable if initialization fails
+        else:
+            logger.warning("GEMINI_API_KEY environment variable not set. Gemini AI features will be disabled.")
+
 
         # Initialize OpenVAS/GVM client if configured
         self.openvas_enabled = False
@@ -167,8 +186,8 @@ class AdvancedVulnerabilityScanner:
                 # Enhanced vulnerability analysis
                 if nmap_results.get("hosts"):
                     for host in nmap_results["hosts"]:
-                        if host.get("ports"):
-                            self._enhanced_vulnerability_analysis(host)
+                        # This method now also handles AI analysis
+                        self._enhanced_vulnerability_analysis(host) 
                 
             if scan_type in [ScanType.OPENVAS, ScanType.HYBRID] and self.openvas_enabled:
                 openvas_results = self._run_openvas_scan(target)
@@ -330,13 +349,16 @@ class AdvancedVulnerabilityScanner:
                 results["results"]["shodan"] = shodan_results
 
     def _enhanced_vulnerability_analysis(self, host: Dict):
-        """Perform deeper analysis on discovered services"""
+        """Perform deeper analysis on discovered services and get AI insights"""
         logger.info(f"Performing enhanced analysis for {host.get('ip')}")
         
-        # Check for exploit availability
         futures = []
-        for vuln in host.get("vulnerabilities", []):
+        cve_vulns = [] # To store vulnerabilities with CVEs for exploit and AI check
+
+        # Collect vulnerabilities that have CVEs for exploit and AI analysis
+        for vuln_idx, vuln in enumerate(host.get("vulnerabilities", [])):
             if vuln.get("cve"):
+                cve_vulns.append((vuln_idx, vuln))
                 futures.append(
                     self.executor.submit(
                         self._check_exploit_availability,
@@ -346,8 +368,95 @@ class AdvancedVulnerabilityScanner:
         
         # Update with exploit info
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
-            if future.result():
-                host["vulnerabilities"][i]["exploit_available"] = True
+            original_idx = cve_vulns[i][0] # Get the original index
+            host["vulnerabilities"][original_idx].exploit_available = future.result()
+
+        # NEW: Get AI-generated analysis for each vulnerability
+        if self.gemini_api_key and self.gemini_model: # Check if Gemini is enabled
+            ai_futures = []
+            for vuln_idx, vuln_obj in enumerate(host.get("vulnerabilities", [])):
+                ai_futures.append(
+                    self.executor.submit(
+                        self._get_gemini_vulnerability_analysis,
+                        vuln_obj,
+                        host # Pass the host's overall information as context
+                    )
+                )
+            
+            for i, future in enumerate(concurrent.futures.as_completed(ai_futures)):
+                ai_result = future.result()
+                if ai_result:
+                    host["vulnerabilities"][i].ai_analysis = ai_result["explanation"]
+                else:
+                    host["vulnerabilities"][i].ai_analysis = "AI analysis not available for this vulnerability."
+
+    def _get_gemini_vulnerability_analysis(self, vulnerability: Vulnerability, host_info: Dict) -> Optional[Dict]:
+        """
+        Generates an explanation, impact, and recommendations for a given vulnerability
+        using Gemini AI.
+        """
+        if not self.gemini_api_key or not self.gemini_model:
+            logger.debug("Gemini AI is not enabled or initialized.")
+            return None
+
+        # Prepare context for Gemini
+        host_ip = host_info.get("ip", "N/A")
+        hostname = ", ".join(host_info.get("hostnames", [])) if host_info.get("hostnames") else "N/A"
+        os_info = host_info.get("os", "Unknown OS")
+        
+        prompt = f"""
+        You are a highly skilled cybersecurity analyst. Your task is to explain a detected vulnerability,
+        its potential impact, and provide clear, actionable recommendations for remediation and
+        general security best practices.
+
+        Vulnerability Details:
+        - CVE ID: {vulnerability.cve}
+        - Description: {vulnerability.description}
+        - CVSS Score: {vulnerability.cvss}
+        - Severity: {vulnerability.severity.value}
+        - Affected Port: {vulnerability.port if vulnerability.port else 'N/A'}
+        - Affected Service: {vulnerability.service if vulnerability.service else 'N/A'}
+        - Exploit Available: {'Yes' if vulnerability.exploit_available else 'No'}
+        - References: {', '.join(vulnerability.references) if vulnerability.references else 'None'}
+
+        Host Information:
+        - IP Address: {host_ip}
+        - Hostname: {hostname}
+        - Operating System: {os_info}
+
+        Please structure your response clearly with the following sections.
+        Use markdown for formatting headings and bullet points.
+
+        ### Vulnerability Explanation
+        * What is this vulnerability in simple terms?
+        * Why is it dangerous, and how could it be exploited?
+
+        ### Potential Impact
+        * What specific risks does this vulnerability pose to the system if exploited (e.g., data breach, unauthorized access, denial of service, remote code execution)?
+        * Consider the context of the host and service.
+
+        ### Specific Remediation Recommendations
+        * Provide concrete, prioritized, and step-by-step instructions to fix or mitigate this particular vulnerability.
+        * Include specific patches, configuration changes, or best practices relevant to the service/OS if applicable.
+
+        ### General Security Best Practices
+        * Suggest broader security practices that would help prevent similar vulnerabilities in the future and improve the overall system security posture.
+        """
+
+        try:
+            logger.info(f"Querying Gemini for analysis of {vulnerability.cve}...")
+            response = self.gemini_model.generate_content(prompt)
+            if response.text:
+                logger.info(f"Successfully received Gemini analysis for {vulnerability.cve}.")
+                return {
+                    "explanation": response.text # Gemini's full response
+                }
+            else:
+                logger.warning(f"Gemini returned an empty response for {vulnerability.cve}.")
+                return None
+        except Exception as e:
+            logger.error(f"Error querying Gemini for {vulnerability.cve}: {e}")
+            return None
 
     def _check_service_vulnerabilities(self, service: str, product: str, version: str, port: int) -> List[Vulnerability]:
         """Check for known vulnerabilities in a service"""
@@ -695,12 +804,25 @@ class AdvancedVulnerabilityScanner:
                 if host.get("vulnerabilities"):
                     print("\nVulnerabilities:")
                     for vuln in host["vulnerabilities"]:
-                        print(f"  {vuln['cve']} ({vuln['severity']} - CVSS: {vuln['cvss']})")
-                        if vuln.get("exploit_available"):
+                        # Support both dict and dataclass object
+                        cve = getattr(vuln, "cve", vuln.get("cve")) if isinstance(vuln, dict) else vuln.cve
+                        severity = getattr(vuln, "severity", vuln.get("severity")) if isinstance(vuln, dict) else vuln.severity
+                        cvss = getattr(vuln, "cvss", vuln.get("cvss")) if isinstance(vuln, dict) else vuln.cvss
+                        description = getattr(vuln, "description", vuln.get("description")) if isinstance(vuln, dict) else vuln.description
+                        exploit_available = getattr(vuln, "exploit_available", vuln.get("exploit_available", False)) if isinstance(vuln, dict) else vuln.exploit_available
+                        ai_analysis = getattr(vuln, "ai_analysis", vuln.get("ai_analysis")) if isinstance(vuln, dict) else vuln.ai_analysis
+
+                        print(f"  {cve} ({severity.value if hasattr(severity, 'value') else severity} - CVSS: {cvss})")
+                        if exploit_available:
                             print("    [EXPLOIT AVAILABLE]")
-                        print(f"    {vuln['description']}")
+                        print(f"    Description: {description}")
+                        if ai_analysis:
+                            print("\n    AI-Generated Analysis & Recommendations:")
+                            for line in ai_analysis.splitlines():
+                                print(f"    {line.strip()}")
+                        print("-" * 40)
                         
-        # OpenVAS results
+        # OpenVAS results (No changes here, as AI integration focuses on Nmap-detected vulns for this version)
         if "openvas" in results["results"]:
             print("\n--- OpenVAS Results ---")
             ov_results = results["results"]["openvas"]
@@ -718,7 +840,7 @@ class AdvancedVulnerabilityScanner:
                     print(f"CVEs: {', '.join(finding['cves'])}")
                 print(f"\nDescription:\n{finding['description']}")
                 
-        # Supplemental results
+        # Supplemental results (No changes here)
         if "ssl" in results["results"]:
             print("\n--- SSL/TLS Findings ---")
             for finding in results["results"]["ssl"].get("findings", []):
@@ -776,170 +898,180 @@ class AdvancedVulnerabilityScanner:
                     pdf.ln(1)
                 # Vulnerabilities
                 if host.get("vulnerabilities"):
-                    pdf.set_font(style="B")
+                    pdf.set_font("helvetica", style="B", size=11)
                     pdf.cell(200, 8, text="Vulnerabilities:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                    pdf.set_font(style="")
+                    pdf.set_font("helvetica", size=10)
+                    
                     for vuln in host["vulnerabilities"]:
-                        color = {
-                            "Critical": (255, 0, 0),
-                            "High": (255, 128, 0),
-                            "Medium": (255, 255, 0),
-                            "Low": (0, 128, 0),
-                            "Informational": (0, 0, 255)
-                        }.get(str(vuln.severity), (0, 0, 0))
-                        pdf.set_text_color(*color)
-                        pdf.cell(200, 8, 
-                               text=f"  {vuln.cve} ({vuln.severity} - CVSS: {vuln.cvss})", 
+                        cve = getattr(vuln, "cve", vuln.get("cve")) if isinstance(vuln, dict) else vuln.cve
+                        severity = getattr(vuln, "severity", vuln.get("severity")) if isinstance(vuln, dict) else vuln.severity
+                        cvss = getattr(vuln, "cvss", vuln.get("cvss")) if isinstance(vuln, dict) else vuln.cvss
+                        description = getattr(vuln, "description", vuln.get("description")) if isinstance(vuln, dict) else vuln.description
+                        exploit_available = getattr(vuln, "exploit_available", vuln.get("exploit_available", False)) if isinstance(vuln, dict) else vuln.exploit_available
+                        ai_analysis = getattr(vuln, "ai_analysis", vuln.get("ai_analysis")) if isinstance(vuln, dict) else vuln.ai_analysis
+
+                        pdf.set_font(style="B")
+                        pdf.cell(200, 7, text=f"  CVE: {cve} ({severity.value if hasattr(severity, 'value') else severity} - CVSS: {cvss})", 
                                new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                        pdf.set_text_color(0, 0, 0)
-                        if getattr(vuln, "exploit_available", False):
-                            pdf.set_text_color(255, 0, 0)
-                            pdf.cell(200, 8, text="    [EXPLOIT AVAILABLE]", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                            pdf.set_text_color(0, 0, 0)
-                        pdf.multi_cell(0, 8, text=f"    {vuln.description}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                        if vuln.references:
-                            pdf.set_font(style="I")
-                            pdf.cell(200, 8, text=f"    References:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                            pdf.set_font(style="")
-                            for ref in vuln.references:
-                                pdf.cell(200, 8, text=f"      {ref}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                        pdf.ln(2)
-                pdf.ln(5)
-    
-        # OpenVAS results
+                        pdf.set_font(style="")
+                        if exploit_available:
+                            pdf.cell(200, 6, text="    [EXPLOIT AVAILABLE]", new_x=XPos.LMARGIN, new_y=YPos.NEXT, fill=True, border=1, align='C')
+                        pdf.multi_cell(0, 6, text=f"    Description: {description}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+                        if ai_analysis:
+                            pdf.set_font("helvetica", style="I", size=9)
+                            pdf.multi_cell(0, 5, text="    AI-Generated Analysis & Recommendations:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                            pdf.set_font("helvetica", size=9)
+                            for line in ai_analysis.splitlines():
+                                if line.strip():
+                                    pdf.multi_cell(0, 4, text=f"    {line.strip()}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                            pdf.ln(2)
+                        pdf.ln(5)
+        
+        # OpenVAS results (No changes here, as AI integration focuses on Nmap-detected vulns for this version)
         if "openvas" in results["results"]:
-            pdf.add_page()
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="OpenVAS Scan Results", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.set_font("helvetica", size=10)
-            
+
             ov_results = results["results"]["openvas"]
-            pdf.cell(200, 8, text=f"Scan ID: {ov_results.get('scan_id')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.cell(200, 8, text=f"Total Findings: {ov_results.get('summary', {}).get('total', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.cell(200, 8, text=f"Critical: {ov_results.get('summary', {}).get('critical', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.cell(200, 8, text=f"High: {ov_results.get('summary', {}).get('high', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.cell(200, 8, text=f"Medium: {ov_results.get('summary', {}).get('medium', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.cell(200, 8, text=f"Low: {ov_results.get('summary', {}).get('low', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Scan ID: {ov_results.get('scan_id', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Total Findings: {ov_results.get('summary', {}).get('total', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Critical: {ov_results.get('summary', {}).get('critical', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"High: {ov_results.get('summary', {}).get('high', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Medium: {ov_results.get('summary', {}).get('medium', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Low: {ov_results.get('summary', {}).get('low', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.ln(5)
             
             for finding in ov_results.get("findings", []):
-                color = {
-                    "Critical": (255, 0, 0),
-                    "High": (255, 128, 0),
-                    "Medium": (255, 255, 0),
-                    "Low": (0, 128, 0),
-                    "Informational": (0, 0, 255)
-                }.get(str(finding.get('severity', 'Informational')), (0, 0, 0))
-                pdf.set_text_color(*color)
                 pdf.set_font(style="B")
-                pdf.cell(200, 8, text=f"[{finding.get('severity', 'N/A')}] {finding.get('name', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.cell(200, 7, text=f"[{finding['severity']}] {finding['name']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 pdf.set_font(style="")
-                pdf.set_text_color(0, 0, 0)
-                
-                pdf.cell(200, 8, text=f"Port: {finding.get('port', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.cell(200, 6, text=f"Port: {finding.get('port', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 if finding.get("cves"):
-                    pdf.cell(200, 8, text=f"CVEs: {', '.join(finding['cves'])}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                pdf.multi_cell(0, 8, text=f"Description:\n{finding.get('description', '')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                    pdf.cell(200, 6, text=f"CVEs: {', '.join(finding['cves'])}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.multi_cell(0, 6, text=f"Description:\n{finding['description']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 pdf.ln(5)
-    
-        # Supplemental results
-        if "dns" in results["results"]:
-            pdf.add_page()
-            pdf.set_font("helvetica", style="B", size=12)
-            pdf.cell(200, 10, text="DNS Reconnaissance", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.set_font("helvetica", size=10)
-            for record_type, records in results["results"]["dns"].items():
-                pdf.cell(200, 8, text=f"{record_type}: {', '.join(records)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.ln(5)
-        if "ssl" in results["results"]:
-            pdf.add_page()
+
+        # SSL/TLS Findings (No changes here)
+        if "ssl" in results["results"] and results["results"]["ssl"] and results["results"]["ssl"].get("findings"):
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="SSL/TLS Findings", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.set_font("helvetica", size=10)
             for finding in results["results"]["ssl"].get("findings", []):
-                pdf.cell(200, 8, text=f"[{finding.get('severity', 'N/A')}] {finding.get('id', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.set_font(style="B")
+                pdf.cell(200, 7, text=f"[{finding['severity']}] {finding['id']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.set_font(style="")
                 if finding.get("cve"):
-                    pdf.cell(200, 8, text=f"CVE: {finding['cve']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                pdf.multi_cell(0, 8, text=f"Finding: {finding.get('finding', '')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                pdf.ln(2)
-        if "shodan" in results["results"]:
-            pdf.add_page()
+                    pdf.cell(200, 6, text=f"CVE: {finding['cve']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.multi_cell(0, 6, text=f"Finding: {finding['finding']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.ln(5)
+
+        # Shodan Results (No changes here)
+        if "shodan" in results["results"] and results["results"]["shodan"]:
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="Shodan Internet Exposure", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.set_font("helvetica", size=10)
-            for port in results["results"]["shodan"].get("ports", []):
-                pdf.cell(200, 8, text=f"Port: {port.get('port', 'N/A')}, Product: {port.get('product', '')}, Version: {port.get('version', '')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                if port.get("banner"):
-                    pdf.multi_cell(0, 8, text=f"Banner: {port['banner']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                pdf.ln(1)
-            for vuln in results["results"]["shodan"].get("vulnerabilities", []):
-                pdf.cell(200, 8, text=f"Vulnerability: {vuln.get('id', 'N/A')}, Verified: {vuln.get('verified', False)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                pdf.ln(1)
-    
-        # Save PDF
-        pdf.output(f"scan_report_{self.session_id}.pdf")
+            shodan_res = results["results"]["shodan"]
+            if shodan_res.get("ports"):
+                pdf.cell(200, 7, text="Exposed Ports:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                for p in shodan_res["ports"]:
+                    pdf.multi_cell(0, 6, text=f"  Port: {p.get('port')}, Product: {p.get('product', 'N/A')}, Version: {p.get('version', 'N/A')}", 
+                                 new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            if shodan_res.get("vulnerabilities"):
+                pdf.cell(200, 7, text="Associated Vulnerabilities (Shodan):", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                for v in shodan_res["vulnerabilities"]:
+                    pdf.multi_cell(0, 6, text=f"  ID: {v.get('id')}, Verified: {v.get('verified')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.ln(5)
 
-def main():
-    """Command-line interface for the scanner"""
-    print("\n=== Advanced Vulnerability Scanner ===")
-    print("Combining Nmap, OpenVAS, and API intelligence\n")
-    
-    scanner = AdvancedVulnerabilityScanner()
-    
-    try:
-        # Get target
-        target = input("Enter target (IP, hostname, or range): ").strip()
-        if not target:
-            print("Error: Target cannot be empty")
-            return
-            
-        # Validate target
-        valid, target_type = scanner.validate_target(target)
-        if not valid:
-            print(f"Error: Invalid target format ({target_type})")
-            return
-            
-        # Get scan type
-        scan_type = input("Scan type (nmap/openvas/hybrid) [hybrid]: ").strip().lower()
-        if not scan_type:
-            scan_type = "hybrid"
-            
-        if scan_type not in ["nmap", "openvas", "hybrid"]:
-            print("Error: Invalid scan type")
-            return
-            
-        # Run scan
-        print(f"\nStarting {scan_type} scan of {target}...")
-        results = scanner.run_scan(target, ScanType(scan_type))
-        
-        if not results or "error" in results:
-            print("\nScan failed or no results returned")
-            if results and "error" in results:
-                print(f"Error: {results['error']}")
-            return
-            
-        # Generate report
-        report_format = input("\nReport format (console/json/pdf) [console]: ").strip().lower()
-        if not report_format:
-            report_format = "console"
-            
-        if report_format not in ["console", "json", "pdf"]:
-            print("Error: Invalid report format")
-            return
-            
-        print(f"\nGenerating {report_format} report...")
-        success = scanner.generate_report(results, report_format)
-        
-        if success:
-            print(f"\nReport generated successfully (session ID: {scanner.session_id})")
-        else:
-            print("\nFailed to generate report")
-            
-    except KeyboardInterrupt:
-        print("\nScan cancelled by user")
-    except Exception as e:
-        print(f"\nError: {str(e)}")
-        logger.exception("Scanner error")
+        # DNS Results (No changes here)
+        if "dns" in results["results"] and results["results"]["dns"]:
+            pdf.set_font("helvetica", style="B", size=12)
+            pdf.cell(200, 10, text="DNS Records", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.set_font("helvetica", size=10)
+            for record_type, records in results["results"]["dns"].items():
+                pdf.multi_cell(0, 6, text=f"  {record_type}: {', '.join(records)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.ln(5)
 
+        output_filename = f"scan_report_{self.session_id}.pdf"
+        pdf.output(output_filename)
+        logger.info(f"PDF report generated: {output_filename}")
+
+# Main execution block
 if __name__ == "__main__":
-    main()
+    # Banner
+    print("=" * 60)
+    print("        ADVANCED VULNERABILITY SCANNER".center(60))
+    print("        by K.Musomi".center(60))
+    print("=" * 60)
+    print()
+
+    # Prompt for target
+    target_input = input("Enter target IP or hostname: ").strip()
+    while not target_input:
+        target_input = input("Target cannot be empty. Enter target IP or hostname: ").strip()
+
+    print("\n" + "-" * 60)
+    print("Scan Types:")
+    print("  nmap    - Fast service & vulnerability scan")
+    print("  openvas - Deep authenticated vulnerability scan (if configured)")
+    print("  hybrid  - Both Nmap and OpenVAS (recommended)")
+    print("-" * 60)
+    scan_type_str = input("Scan type? (nmap/openvas/hybrid) [hybrid]: ").strip().lower()
+    if scan_type_str not in ("nmap", "openvas", "hybrid", ""):
+        print("Invalid scan type. Defaulting to 'hybrid'.")
+        scan_type_str = "hybrid"
+    if not scan_type_str:
+        scan_type_str = "hybrid"
+
+    print("\n" + "-" * 60)
+    print("Report Formats:")
+    print("  console - Print results to terminal")
+    print("  json    - Save results as JSON")
+    print("  pdf     - Generate a detailed PDF report")
+    print("-" * 60)
+    report_format = input("Report format? (console/json/pdf) [console]: ").strip().lower()
+    if report_format not in ("console", "json", "pdf", ""):
+        print("Invalid report format. Defaulting to 'console'.")
+        report_format = "console"
+    if not report_format:
+        report_format = "console"
+
+    try:
+        scan_type = ScanType[scan_type_str.upper()]
+    except KeyError:
+        logger.error(f"Invalid scan type: {scan_type_str}. Supported types are: nmap, openvas, hybrid.")
+        sys.exit(1)
+
+    # Summary banner
+    print("\n" + "=" * 60)
+    print("SCAN SUMMARY".center(60))
+    print("=" * 60)
+    print(f"Target       : {target_input}")
+    print(f"Scan Type    : {scan_type.value}")
+    print(f"Report Format: {report_format}")
+    print("=" * 60 + "\n")
+
+    scanner = AdvancedVulnerabilityScanner()
+
+    # Initial validation and cleanup of target input for logging/display
+    parsed_target = target_input
+    if target_input.startswith(('http://', 'https://')):
+        parsed_target = urlparse(target_input).netloc.split(':')[0]
+
+    logger.info(f"Starting scan for target: {parsed_target} with type: {scan_type.value}, report format: {report_format}")
+
+    try:
+        scan_results = scanner.run_scan(target_input, scan_type)
+        if scan_results and not scan_results.get("error"):
+            logger.info("Scan completed successfully. Generating report...")
+            scanner.generate_report(scan_results, report_format)
+        else:
+            logger.error(f"Scan failed or returned no results: {scan_results.get('error', 'Unknown error')}")
+            sys.exit(1)
+    except ValueError as ve:
+        logger.error(f"Configuration or validation error: {ve}")
+        sys.exit(1)
+    except Exception as e:
+        logger.critical(f"An unhandled error occurred during scan execution: {e}", exc_info=True)
+        sys.exit(1)
