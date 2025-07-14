@@ -1,5 +1,5 @@
 import unittest
-from scanner.utils.scanner import clean_version, get_cpe, fetch_cves
+from scanner1.utils.scanner import clean_version, get_cpe, fetch_cves
 
 class TestScannerUtils(unittest.TestCase):
     def test_clean_version(self):

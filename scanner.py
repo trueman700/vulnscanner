@@ -101,7 +101,7 @@ class AdvancedVulnerabilityScanner:
         self.openvas_enabled = False
         if os.getenv('OPENVAS_HOST'):
             try:
-                from scanner.utils.openvas_client import OpenVASClient
+                from scanner1.utils.openvas_client import OpenVASClient
                 self.openvas_client = OpenVASClient(
                     host=os.getenv('OPENVAS_HOST'),
                     username=os.getenv('OPENVAS_USER', 'admin'),

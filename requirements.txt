@@ -5,20 +5,14 @@ requests
 urllib3
 dnspython
 
-### Vulnerability Analysis ###
+### Vulnerability Intelligence APIs (optional, only if used) ###
 vulners
 nvdlib
 
 ### PDF Reporting ###
 fpdf2
-reportlab
-pypdf
 
-### Data Visualization ###
-matplotlib
-seaborn
-
-### Network Security ###
+### Network Security (optional, only if used) ###
 scapy
 paramiko
 impacket
@@ -27,16 +21,22 @@ impacket
 rich
 python-dotenv
 
-### Data Processing ###
+### Web Interface ###
+flask
+
+### Shodan API (optional, only if used) ###
+shodan
+
+### Data Processing & Visualization (optional, only if used) ###
 pandas
 numpy
 lxml
+matplotlib
+seaborn
 
-### Development ###
+### Development & Testing ###
 pytest
 pytest-cov
 black
 bandit
 safety
-shodan 
-flask

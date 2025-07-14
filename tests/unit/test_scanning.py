@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from scanner.utils.scanner import clean_version, get_cpe, fetch_cves
+from scanner1.utils.scanner import clean_version, get_cpe, fetch_cves
 
 class TestScannerFunctions(unittest.TestCase):
     def test_clean_version(self):

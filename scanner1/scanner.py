@@ -14,10 +14,10 @@ from pathlib import Path
 from dataclasses import asdict
 
 # Local imports
-from scanner.database import ScanDatabase
-from scanner.utils.cve_lookup import CVELookup
-from scanner.utils.nmap_parser import parse_nmap_results
-from scanner.utils.scanner import clean_version, get_cpe, fetch_cves  # <--- Use these imports
+from scanner1.database import ScanDatabase
+from scanner1.utils.cve_lookup import CVELookup
+from scanner1.utils.nmap_parser import parse_nmap_results
+from scanner1.utils.scanner import clean_version, get_cpe, fetch_cves  # <--- Use these imports
 
 # Initialize logging
 logging.basicConfig(

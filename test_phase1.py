@@ -1,7 +1,7 @@
 import unittest
 import json
 import os
-from scanner import run_scan  # Import your scan function
+from scanner1 import run_scan  # Import your scan function
 
 class TestPhase1(unittest.TestCase):
     @classmethod

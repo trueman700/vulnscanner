@@ -159,3 +159,341 @@
 2025-07-14 11:53:14,851 - INFO - Performing enhanced analysis for 127.0.0.1
 2025-07-14 11:53:14,852 - INFO - Running supplemental checks...
 2025-07-14 11:53:20,239 - INFO - Scan completed successfully. Generating report...
+2025-07-14 12:02:24,968 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:02:25,092 - ERROR - OpenVAS client initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 12:02:25,093 - ERROR - OpenVAS initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 12:02:25,093 - INFO - Starting scan for target: mmu.ac.ke with type: hybrid, report format: pdf
+2025-07-14 12:02:25,111 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:13:55,117 - INFO - Performing enhanced analysis for 41.204.160.15
+2025-07-14 12:13:55,118 - INFO - Running supplemental checks...
+2025-07-14 12:13:55,568 - INFO - Scan completed successfully. Generating report...
+2025-07-14 12:13:55,631 - INFO - PDF report generated: scan_report_scan_20250714_120224.pdf
+2025-07-14 12:25:01,167 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-14 12:25:01,168 - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 12:25:01,170 - INFO -  * Restarting with stat
+2025-07-14 12:25:02,393 - WARNING -  * Debugger is active!
+2025-07-14 12:25:02,430 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:25:16,968 - INFO - 127.0.0.1 - - [14/Jul/2025 12:25:16] "GET / HTTP/1.1" 200 -
+2025-07-14 12:25:17,517 - INFO - 127.0.0.1 - - [14/Jul/2025 12:25:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-14 12:25:56,124 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:25:56,127 - WARNING - python-gvm package not installed, OpenVAS disabled
+2025-07-14 12:25:56,128 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:26:37,169 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:37] "GET / HTTP/1.0" 200 -
+2025-07-14 12:26:37,206 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:26:37] code 400, message Bad request version ('RTSP/1.0')
+2025-07-14 12:26:37,212 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:37] "[31m[1mOPTIONS / RTSP/1.0[0m" 400 -
+2025-07-14 12:26:42,226 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:26:42] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:26:42,227 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:42] "[31m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" 400 -
+2025-07-14 12:26:47,231 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:26:47] code 400, message Bad request version ('0.12\x00')
+2025-07-14 12:26:47,232 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:47] "[31m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" 400 -
+2025-07-14 12:26:52,236 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:26:52] code 400, message Bad request version ('GetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00')
+2025-07-14 12:26:52,237 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:52] "[31m[1m\x00\x00\x00\x1f\x00\x00\x00\x00\x00\x00\x00\x0cGetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00[0m" 400 -
+2025-07-14 12:26:52,239 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:52] "OPTIONS / HTTP/1.0" 200 -
+2025-07-14 12:26:57,256 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:26:57] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+2025-07-14 12:26:57,257 - INFO - 127.0.0.1 - - [14/Jul/2025 12:26:57] "[31m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:27:02,261 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:02] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:27:02,261 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:02] "[31m[1m\x00\x0c\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:27:02,263 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:02] code 400, message Bad request syntax ('HELP')
+2025-07-14 12:27:02,263 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:02] "[31m[1mHELP[0m" 400 -
+2025-07-14 12:27:02,270 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:02] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+2025-07-14 12:27:02,271 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:02] "[31m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" 400 -
+2025-07-14 12:27:02,276 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:02] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie:')
+2025-07-14 12:27:02,277 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:02] "[31m[1m\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie: mstshash=nmap[0m" 400 -
+2025-07-14 12:27:02,280 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:02] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:27:02,281 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:02] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:27:02,288 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:02] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+2025-07-14 12:27:02,288 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:02] "[31m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" 400 -
+2025-07-14 12:27:07,294 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:07] code 400, message Bad HTTP/0.9 request type ('l\x00')
+2025-07-14 12:27:07,294 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:07] "[31m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:27:07,296 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:07] "[33mGET /nice%20ports,/Trinity.txt.bak HTTP/1.0[0m" 404 -
+2025-07-14 12:27:07,310 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:07] code 400, message Bad request syntax ('\x01default')
+2025-07-14 12:27:07,310 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:07] "[31m[1m\x01default[0m" 400 -
+2025-07-14 12:27:07,314 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:07] code 400, message Bad request syntax ('0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00')
+2025-07-14 12:27:07,314 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:07] "[31m[1m0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00[0m" 400 -
+2025-07-14 12:27:12,325 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:12] code 400, message Bad HTTP/0.9 request type ('0')
+2025-07-14 12:27:12,326 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:12] "[31m[1m0\x0c\x02\x01\x01`\x07\x02\x01\x02\x04\x00\x80\x00[0m" 400 -
+2025-07-14 12:27:12,327 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:12] code 400, message Bad request version ('SIP/2.0')
+2025-07-14 12:27:12,328 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:12] "[31m[1mOPTIONS sip:nm SIP/2.0[0m" 400 -
+2025-07-14 12:27:17,340 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:17] code 400, message Bad request syntax ('TNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00')
+2025-07-14 12:27:17,341 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:17] "[31m[1mTNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00[0m" 400 -
+2025-07-14 12:27:22,345 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:22] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00')
+2025-07-14 12:27:22,346 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:22] "[31m[1m\x03\x00\x00\x0b\x06à\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:27:27,350 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:27] code 400, message Bad request syntax ('DmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13')
+2025-07-14 12:27:27,360 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:27] "[31m[1mDmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13[0m" 400 -
+2025-07-14 12:27:32,356 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:32] code 400, message Bad HTTP/0.9 request type (':\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@')
+2025-07-14 12:27:32,357 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:32] "[31m[1m:\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:27:37,363 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:37] code 400, message Bad request syntax ('JRMI\x00\x02K')
+2025-07-14 12:27:37,367 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:37] "[31m[1mJRMI\x00\x02K[0m" 400 -
+2025-07-14 12:27:42,368 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:42] code 400, message Bad request version ('\x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_')
+2025-07-14 12:27:42,371 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:42] "[31m[1m\x01\x00\x00ýÎú\x0b° \x00\x00\x00MMS\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x01\x00\x03\x00ðððð\x0b\x00\x04\x00\x1c\x00\x03\x00N\x00S\x00P\x00l\x00a\x00y\x00e\x00r\x00/\x009\x00.\x000\x00.\x000\x00.\x002\x009\x008\x000\x00;\x00 \x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_[0m" 400 -
+2025-07-14 12:27:47,376 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:47] code 400, message Bad HTTP/0.9 request type ('\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00')
+2025-07-14 12:27:47,377 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:47] "[31m[1m\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x004æ\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))[0m" 400 -
+2025-07-14 12:27:52,381 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:52] code 400, message Bad request version ('\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00')
+2025-07-14 12:27:52,381 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:52] "[31m[1m\x12\x01\x004\x00\x00\x00\x00\x00\x00\x15\x00\x06\x01\x00\x1b\x00\x01\x02\x00\x1c\x00\x0c\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00[0m" 400 -
+2025-07-14 12:27:57,386 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:27:57] code 400, message Bad request syntax ('\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00')
+2025-07-14 12:27:57,387 - INFO - 127.0.0.1 - - [14/Jul/2025 12:27:57] "[31m[1m\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00[0m" 400 -
+2025-07-14 12:28:02,391 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:28:02] code 400, message Bad request syntax ('GIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00')
+2025-07-14 12:28:02,392 - INFO - 127.0.0.1 - - [14/Jul/2025 12:28:02] "[31m[1mGIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:28:02,745 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:28:02] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:28:02,746 - INFO - 127.0.0.1 - - [14/Jul/2025 12:28:02] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:29:06,792 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:29:06] code 400, message Bad HTTP/0.9 request type ('\x80\x00\x00(@æñ\x95\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86')
+2025-07-14 12:29:06,793 - INFO - 127.0.0.1 - - [14/Jul/2025 12:29:06] "[31m[1m\x80\x00\x00(@æñ\x95\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:29:15,081 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-14 12:29:15,082 - INFO - Running supplemental checks...
+2025-07-14 12:29:15,248 - INFO - 127.0.0.1 - - [14/Jul/2025 12:29:15] "POST / HTTP/1.1" 200 -
+2025-07-14 12:30:43,581 - INFO -  * Detected change in '/home/gig/Documents/musomi]/Project1/vulnerability-scanner/webapp.py', reloading
+2025-07-14 12:30:44,270 - INFO -  * Restarting with stat
+2025-07-14 12:33:06,374 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-14 12:33:06,374 - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 12:33:06,376 - INFO -  * Restarting with stat
+2025-07-14 12:33:07,360 - WARNING -  * Debugger is active!
+2025-07-14 12:33:07,365 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:33:13,196 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:33:13,197 - WARNING - python-gvm package not installed, OpenVAS disabled
+2025-07-14 12:33:13,197 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:33:35,047 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-14 12:33:35,048 - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 12:33:35,049 - INFO -  * Restarting with stat
+2025-07-14 12:33:37,325 - WARNING -  * Debugger is active!
+2025-07-14 12:33:37,329 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:33:46,661 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:33:46,661 - WARNING - python-gvm package not installed, OpenVAS disabled
+2025-07-14 12:33:46,661 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:34:27,518 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:27] "[35m[1mGET / HTTP/1.0[0m" 500 -
+2025-07-14 12:34:27,578 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:27] code 400, message Bad request version ('RTSP/1.0')
+2025-07-14 12:34:27,578 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:27] "[31m[1mOPTIONS / RTSP/1.0[0m" 400 -
+2025-07-14 12:34:32,587 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:32] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:34:32,589 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:32] "[31m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" 400 -
+2025-07-14 12:34:37,593 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:37] code 400, message Bad request version ('0.12\x00')
+2025-07-14 12:34:37,594 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:37] "[31m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" 400 -
+2025-07-14 12:34:42,599 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:42] code 400, message Bad request version ('GetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00')
+2025-07-14 12:34:42,600 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:42] "[31m[1m\x00\x00\x00\x1f\x00\x00\x00\x00\x00\x00\x00\x0cGetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00[0m" 400 -
+2025-07-14 12:34:42,602 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:42] "OPTIONS / HTTP/1.0" 200 -
+2025-07-14 12:34:47,619 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:47] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+2025-07-14 12:34:47,620 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:47] "[31m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:34:52,624 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:52] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:34:52,625 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:52] code 400, message Bad request syntax ('HELP')
+2025-07-14 12:34:52,625 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:52] "[31m[1m\x00\x0c\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:34:52,625 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:52] "[31m[1mHELP[0m" 400 -
+2025-07-14 12:34:52,629 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:52] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+2025-07-14 12:34:52,630 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:52] "[31m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" 400 -
+2025-07-14 12:34:52,640 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie:')
+2025-07-14 12:34:52,641 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:52] "[31m[1m\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie: mstshash=nmap[0m" 400 -
+2025-07-14 12:34:52,643 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:52] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:34:52,644 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:52] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:34:52,649 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:52] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+2025-07-14 12:34:52,650 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:52] "[31m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" 400 -
+2025-07-14 12:34:57,661 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:57] code 400, message Bad HTTP/0.9 request type ('l\x00')
+2025-07-14 12:34:57,662 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:57] "[31m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:34:57,666 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:57] "[33mGET /nice%20ports,/Trinity.txt.bak HTTP/1.0[0m" 404 -
+2025-07-14 12:34:57,681 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:57] code 400, message Bad request syntax ('\x01default')
+2025-07-14 12:34:57,682 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:57] "[31m[1m\x01default[0m" 400 -
+2025-07-14 12:34:57,688 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:34:57] code 400, message Bad request syntax ('0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00')
+2025-07-14 12:34:57,689 - INFO - 127.0.0.1 - - [14/Jul/2025 12:34:57] "[31m[1m0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00[0m" 400 -
+2025-07-14 12:35:02,695 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:02] code 400, message Bad HTTP/0.9 request type ('0')
+2025-07-14 12:35:02,695 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:02] "[31m[1m0\x0c\x02\x01\x01`\x07\x02\x01\x02\x04\x00\x80\x00[0m" 400 -
+2025-07-14 12:35:02,697 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:02] code 400, message Bad request version ('SIP/2.0')
+2025-07-14 12:35:02,697 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:02] "[31m[1mOPTIONS sip:nm SIP/2.0[0m" 400 -
+2025-07-14 12:35:07,708 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:07] code 400, message Bad request syntax ('TNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00')
+2025-07-14 12:35:07,710 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:07] "[31m[1mTNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00[0m" 400 -
+2025-07-14 12:35:12,713 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00')
+2025-07-14 12:35:12,714 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:12] "[31m[1m\x03\x00\x00\x0b\x06à\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:35:17,718 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:17] code 400, message Bad request syntax ('DmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13')
+2025-07-14 12:35:17,719 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:17] "[31m[1mDmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13[0m" 400 -
+2025-07-14 12:35:22,723 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:22] code 400, message Bad HTTP/0.9 request type (':\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@')
+2025-07-14 12:35:22,725 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:22] "[31m[1m:\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:35:27,730 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:27] code 400, message Bad request syntax ('JRMI\x00\x02K')
+2025-07-14 12:35:27,731 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:27] "[31m[1mJRMI\x00\x02K[0m" 400 -
+2025-07-14 12:35:32,735 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:32] code 400, message Bad request version ('\x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_')
+2025-07-14 12:35:32,738 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:32] "[31m[1m\x01\x00\x00ýÎú\x0b° \x00\x00\x00MMS\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x01\x00\x03\x00ðððð\x0b\x00\x04\x00\x1c\x00\x03\x00N\x00S\x00P\x00l\x00a\x00y\x00e\x00r\x00/\x009\x00.\x000\x00.\x000\x00.\x002\x009\x008\x000\x00;\x00 \x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_[0m" 400 -
+2025-07-14 12:35:37,741 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:37] code 400, message Bad HTTP/0.9 request type ('\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00')
+2025-07-14 12:35:37,742 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:37] "[31m[1m\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x004æ\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))[0m" 400 -
+2025-07-14 12:35:42,746 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:42] code 400, message Bad request version ('\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00')
+2025-07-14 12:35:42,747 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:42] "[31m[1m\x12\x01\x004\x00\x00\x00\x00\x00\x00\x15\x00\x06\x01\x00\x1b\x00\x01\x02\x00\x1c\x00\x0c\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00[0m" 400 -
+2025-07-14 12:35:47,752 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:47] code 400, message Bad request syntax ('\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00')
+2025-07-14 12:35:47,753 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:47] "[31m[1m\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00[0m" 400 -
+2025-07-14 12:35:52,757 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:52] code 400, message Bad request syntax ('GIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00')
+2025-07-14 12:35:52,757 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:52] "[31m[1mGIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:35:53,152 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:35:53] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:35:53,153 - INFO - 127.0.0.1 - - [14/Jul/2025 12:35:53] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:37:07,878 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:37:07] code 400, message Bad HTTP/0.9 request type ('\x80\x00\x00(\x0e"\x93$\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86')
+2025-07-14 12:37:07,879 - INFO - 127.0.0.1 - - [14/Jul/2025 12:37:07] "[31m[1m\x80\x00\x00(\x0e"\x93$\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:37:16,921 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-14 12:37:16,922 - INFO - Running supplemental checks...
+2025-07-14 12:37:17,103 - INFO - 127.0.0.1 - - [14/Jul/2025 12:37:17] "POST / HTTP/1.1" 200 -
+2025-07-14 12:37:26,156 - INFO - 127.0.0.1 - - [14/Jul/2025 12:37:26] "GET /download-pdf HTTP/1.1" 200 -
+2025-07-14 12:37:51,428 - INFO - 127.0.0.1 - - [14/Jul/2025 12:37:51] "[36mGET /download-pdf HTTP/1.1[0m" 304 -
+2025-07-14 12:41:37,584 - INFO -  * Detected change in '/home/gig/Documents/musomi]/Project1/vulnerability-scanner/webapp.py', reloading
+2025-07-14 12:41:38,390 - INFO -  * Restarting with stat
+2025-07-14 12:41:39,789 - WARNING -  * Debugger is active!
+2025-07-14 12:41:39,811 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:43:21,199 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:43:21,199 - WARNING - python-gvm package not installed, OpenVAS disabled
+2025-07-14 12:43:21,199 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:44:02,155 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:02] "[35m[1mGET / HTTP/1.0[0m" 500 -
+2025-07-14 12:44:02,211 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:02] code 400, message Bad request version ('RTSP/1.0')
+2025-07-14 12:44:02,212 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:02] "[31m[1mOPTIONS / RTSP/1.0[0m" 400 -
+2025-07-14 12:44:07,229 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:07] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:44:07,230 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:07] "[31m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" 400 -
+2025-07-14 12:44:12,231 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:12] code 400, message Bad request version ('0.12\x00')
+2025-07-14 12:44:12,232 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:12] "[31m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" 400 -
+2025-07-14 12:44:17,236 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:17] code 400, message Bad request version ('GetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00')
+2025-07-14 12:44:17,237 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:17] "[31m[1m\x00\x00\x00\x1f\x00\x00\x00\x00\x00\x00\x00\x0cGetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00[0m" 400 -
+2025-07-14 12:44:17,239 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:17] "OPTIONS / HTTP/1.0" 200 -
+2025-07-14 12:44:22,260 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:22] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+2025-07-14 12:44:22,264 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:22] "[31m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:44:27,264 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:27] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:44:27,265 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:27] "[31m[1m\x00\x0c\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:44:27,267 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:27] code 400, message Bad request syntax ('HELP')
+2025-07-14 12:44:27,267 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:27] "[31m[1mHELP[0m" 400 -
+2025-07-14 12:44:27,271 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:27] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+2025-07-14 12:44:27,271 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:27] "[31m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" 400 -
+2025-07-14 12:44:27,277 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie:')
+2025-07-14 12:44:27,278 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:27] "[31m[1m\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie: mstshash=nmap[0m" 400 -
+2025-07-14 12:44:27,291 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:27] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:44:27,292 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:27] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:44:27,303 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:27] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+2025-07-14 12:44:27,304 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:27] "[31m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" 400 -
+2025-07-14 12:44:32,313 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:32] code 400, message Bad HTTP/0.9 request type ('l\x00')
+2025-07-14 12:44:32,315 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:32] "[33mGET /nice%20ports,/Trinity.txt.bak HTTP/1.0[0m" 404 -
+2025-07-14 12:44:32,315 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:32] "[31m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:44:32,328 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:32] code 400, message Bad request syntax ('\x01default')
+2025-07-14 12:44:32,330 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:32] "[31m[1m\x01default[0m" 400 -
+2025-07-14 12:44:32,335 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:32] code 400, message Bad request syntax ('0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00')
+2025-07-14 12:44:32,337 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:32] "[31m[1m0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00[0m" 400 -
+2025-07-14 12:44:37,348 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:37] code 400, message Bad HTTP/0.9 request type ('0')
+2025-07-14 12:44:37,349 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:37] "[31m[1m0\x0c\x02\x01\x01`\x07\x02\x01\x02\x04\x00\x80\x00[0m" 400 -
+2025-07-14 12:44:37,350 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:37] code 400, message Bad request version ('SIP/2.0')
+2025-07-14 12:44:37,351 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:37] "[31m[1mOPTIONS sip:nm SIP/2.0[0m" 400 -
+2025-07-14 12:44:42,362 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:42] code 400, message Bad request syntax ('TNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00')
+2025-07-14 12:44:42,363 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:42] "[31m[1mTNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00[0m" 400 -
+2025-07-14 12:44:47,367 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00')
+2025-07-14 12:44:47,367 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:47] "[31m[1m\x03\x00\x00\x0b\x06à\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:44:52,373 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:52] code 400, message Bad request syntax ('DmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13')
+2025-07-14 12:44:52,374 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:52] "[31m[1mDmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13[0m" 400 -
+2025-07-14 12:44:57,378 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:44:57] code 400, message Bad HTTP/0.9 request type (':\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@')
+2025-07-14 12:44:57,379 - INFO - 127.0.0.1 - - [14/Jul/2025 12:44:57] "[31m[1m:\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:45:02,386 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:02] code 400, message Bad request syntax ('JRMI\x00\x02K')
+2025-07-14 12:45:02,389 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:02] "[31m[1mJRMI\x00\x02K[0m" 400 -
+2025-07-14 12:45:07,395 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:07] code 400, message Bad request version ('\x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_')
+2025-07-14 12:45:07,396 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:07] "[31m[1m\x01\x00\x00ýÎú\x0b° \x00\x00\x00MMS\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x01\x00\x03\x00ðððð\x0b\x00\x04\x00\x1c\x00\x03\x00N\x00S\x00P\x00l\x00a\x00y\x00e\x00r\x00/\x009\x00.\x000\x00.\x000\x00.\x002\x009\x008\x000\x00;\x00 \x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_[0m" 400 -
+2025-07-14 12:45:12,400 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:12] code 400, message Bad HTTP/0.9 request type ('\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00')
+2025-07-14 12:45:12,401 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:12] "[31m[1m\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x004æ\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))[0m" 400 -
+2025-07-14 12:45:17,402 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:17] code 400, message Bad request version ('\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00')
+2025-07-14 12:45:17,403 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:17] "[31m[1m\x12\x01\x004\x00\x00\x00\x00\x00\x00\x15\x00\x06\x01\x00\x1b\x00\x01\x02\x00\x1c\x00\x0c\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00[0m" 400 -
+2025-07-14 12:45:22,407 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:22] code 400, message Bad request syntax ('\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00')
+2025-07-14 12:45:22,408 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:22] "[31m[1m\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00[0m" 400 -
+2025-07-14 12:45:27,412 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:27] code 400, message Bad request syntax ('GIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00')
+2025-07-14 12:45:27,413 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:27] "[31m[1mGIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:45:28,183 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:45:28] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:45:28,184 - INFO - 127.0.0.1 - - [14/Jul/2025 12:45:28] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:46:07,382 - INFO -  * Detected change in '/home/gig/Documents/musomi]/Project1/vulnerability-scanner/webapp.py', reloading
+2025-07-14 12:46:08,966 - INFO -  * Restarting with stat
+2025-07-14 12:46:11,477 - WARNING -  * Debugger is active!
+2025-07-14 12:46:11,481 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:46:21,944 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:46:21,945 - WARNING - python-gvm package not installed, OpenVAS disabled
+2025-07-14 12:46:21,946 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:46:50,524 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-14 12:46:50,524 - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 12:46:50,526 - INFO -  * Restarting with stat
+2025-07-14 12:46:51,661 - WARNING -  * Debugger is active!
+2025-07-14 12:46:51,669 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:46:55,111 - INFO - 127.0.0.1 - - [14/Jul/2025 12:46:55] "GET / HTTP/1.1" 200 -
+2025-07-14 12:46:56,008 - INFO - 127.0.0.1 - - [14/Jul/2025 12:46:56] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-14 12:47:05,739 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:47:05,740 - WARNING - python-gvm package not installed, OpenVAS disabled
+2025-07-14 12:47:05,740 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:47:31,903 - INFO -  * Detected change in '/home/gig/Documents/musomi]/Project1/vulnerability-scanner/scanner.py', reloading
+2025-07-14 12:47:32,421 - INFO -  * Restarting with stat
+2025-07-14 12:47:34,481 - WARNING -  * Debugger is active!
+2025-07-14 12:47:34,486 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:47:46,375 - INFO - 127.0.0.1 - - [14/Jul/2025 12:47:46] "GET / HTTP/1.1" 200 -
+2025-07-14 12:47:46,644 - INFO - 127.0.0.1 - - [14/Jul/2025 12:47:46] "GET / HTTP/1.0" 200 -
+2025-07-14 12:47:46,719 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:47:46] code 400, message Bad request version ('RTSP/1.0')
+2025-07-14 12:47:46,721 - INFO - 127.0.0.1 - - [14/Jul/2025 12:47:46] "[31m[1mOPTIONS / RTSP/1.0[0m" 400 -
+2025-07-14 12:47:51,742 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:47:51] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:47:51,743 - INFO - 127.0.0.1 - - [14/Jul/2025 12:47:51] "[31m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" 400 -
+2025-07-14 12:48:00,505 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-14 12:48:00,506 - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 12:48:00,507 - INFO -  * Restarting with stat
+2025-07-14 12:48:01,638 - WARNING -  * Debugger is active!
+2025-07-14 12:48:01,642 - INFO -  * Debugger PIN: 237-702-066
+2025-07-14 12:48:08,080 - INFO - Gemini AI model initialized successfully.
+2025-07-14 12:48:08,541 - ERROR - OpenVAS client initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 12:48:08,541 - ERROR - OpenVAS initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-07-14 12:48:08,542 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-07-14 12:48:49,477 - INFO - 127.0.0.1 - - [14/Jul/2025 12:48:49] "GET / HTTP/1.0" 200 -
+2025-07-14 12:48:49,517 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:48:49] code 400, message Bad request version ('RTSP/1.0')
+2025-07-14 12:48:49,517 - INFO - 127.0.0.1 - - [14/Jul/2025 12:48:49] "[31m[1mOPTIONS / RTSP/1.0[0m" 400 -
+2025-07-14 12:48:54,527 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:48:54] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:48:54,529 - INFO - 127.0.0.1 - - [14/Jul/2025 12:48:54] "[31m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" 400 -
+2025-07-14 12:48:59,532 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:48:59] code 400, message Bad request version ('0.12\x00')
+2025-07-14 12:48:59,534 - INFO - 127.0.0.1 - - [14/Jul/2025 12:48:59] "[31m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" 400 -
+2025-07-14 12:49:04,537 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:04] code 400, message Bad request version ('GetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00')
+2025-07-14 12:49:04,538 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:04] "[31m[1m\x00\x00\x00\x1f\x00\x00\x00\x00\x00\x00\x00\x0cGetClassName\x00\x00\x00\x02\x04\x00\x00\x00\x00\x01\x00[0m" 400 -
+2025-07-14 12:49:04,540 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:04] "OPTIONS / HTTP/1.0" 200 -
+2025-07-14 12:49:09,557 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:09] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+2025-07-14 12:49:09,560 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:09] "[31m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:49:14,562 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:14] code 400, message Bad HTTP/0.9 request type ('\x00')
+2025-07-14 12:49:14,563 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:14] code 400, message Bad request syntax ('HELP')
+2025-07-14 12:49:14,564 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:14] "[31m[1m\x00\x0c\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:49:14,565 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:14] "[31m[1mHELP[0m" 400 -
+2025-07-14 12:49:14,570 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:14] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+2025-07-14 12:49:14,571 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:14] "[31m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" 400 -
+2025-07-14 12:49:14,578 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie:')
+2025-07-14 12:49:14,579 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:14] "[31m[1m\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie: mstshash=nmap[0m" 400 -
+2025-07-14 12:49:14,582 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:14] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:49:14,582 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:14] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:49:14,590 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:14] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+2025-07-14 12:49:14,591 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:14] "[31m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" 400 -
+2025-07-14 12:49:19,604 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:19] code 400, message Bad HTTP/0.9 request type ('l\x00')
+2025-07-14 12:49:19,606 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:19] "[31m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:49:19,607 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:19] "[33mGET /nice%20ports,/Trinity.txt.bak HTTP/1.0[0m" 404 -
+2025-07-14 12:49:19,623 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:19] code 400, message Bad request syntax ('\x01default')
+2025-07-14 12:49:19,623 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:19] "[31m[1m\x01default[0m" 400 -
+2025-07-14 12:49:19,627 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:19] code 400, message Bad request syntax ('0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00')
+2025-07-14 12:49:19,627 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:19] "[31m[1m0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00[0m" 400 -
+2025-07-14 12:49:24,635 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:24] code 400, message Bad HTTP/0.9 request type ('0')
+2025-07-14 12:49:24,636 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:24] code 400, message Bad request version ('SIP/2.0')
+2025-07-14 12:49:24,636 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:24] "[31m[1m0\x0c\x02\x01\x01`\x07\x02\x01\x02\x04\x00\x80\x00[0m" 400 -
+2025-07-14 12:49:24,636 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:24] "[31m[1mOPTIONS sip:nm SIP/2.0[0m" 400 -
+2025-07-14 12:49:29,645 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:29] code 400, message Bad request syntax ('TNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00')
+2025-07-14 12:49:29,646 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:29] "[31m[1mTNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00[0m" 400 -
+2025-07-14 12:49:34,650 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00')
+2025-07-14 12:49:34,652 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:34] "[31m[1m\x03\x00\x00\x0b\x06à\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:49:39,655 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:39] code 400, message Bad request syntax ('DmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13')
+2025-07-14 12:49:39,656 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:39] "[31m[1mDmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13[0m" 400 -
+2025-07-14 12:49:44,657 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:44] code 400, message Bad HTTP/0.9 request type (':\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@')
+2025-07-14 12:49:44,659 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:44] "[31m[1m:\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:49:49,664 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:49] code 400, message Bad request syntax ('JRMI\x00\x02K')
+2025-07-14 12:49:49,665 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:49] "[31m[1mJRMI\x00\x02K[0m" 400 -
+2025-07-14 12:49:54,668 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:54] code 400, message Bad request version ('\x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_')
+2025-07-14 12:49:54,669 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:54] "[31m[1m\x01\x00\x00ýÎú\x0b° \x00\x00\x00MMS\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x01\x00\x03\x00ðððð\x0b\x00\x04\x00\x1c\x00\x03\x00N\x00S\x00P\x00l\x00a\x00y\x00e\x00r\x00/\x009\x00.\x000\x00.\x000\x00.\x002\x009\x008\x000\x00;\x00 \x00{\x000\x000\x000\x000\x00A\x00A\x000\x000\x00-\x000\x00A\x000\x000\x00-\x000\x000\x00a\x000\x00-\x00A\x00A\x000\x00A\x00-\x000\x000\x000\x000\x00A\x000\x00A\x00A\x000\x00A\x00A\x000\x00}\x00\x00\x00àmß_[0m" 400 -
+2025-07-14 12:49:59,674 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:49:59] code 400, message Bad HTTP/0.9 request type ('\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00')
+2025-07-14 12:49:59,676 - INFO - 127.0.0.1 - - [14/Jul/2025 12:49:59] "[31m[1m\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x004æ\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))[0m" 400 -
+2025-07-14 12:50:04,679 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:50:04] code 400, message Bad request version ('\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00')
+2025-07-14 12:50:04,680 - INFO - 127.0.0.1 - - [14/Jul/2025 12:50:04] "[31m[1m\x12\x01\x004\x00\x00\x00\x00\x00\x00\x15\x00\x06\x01\x00\x1b\x00\x01\x02\x00\x1c\x00\x0c\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00[0m" 400 -
+2025-07-14 12:50:09,685 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:50:09] code 400, message Bad request syntax ('\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00')
+2025-07-14 12:50:09,686 - INFO - 127.0.0.1 - - [14/Jul/2025 12:50:09] "[31m[1m\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00[0m" 400 -
+2025-07-14 12:50:14,690 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:50:14] code 400, message Bad request syntax ('GIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00')
+2025-07-14 12:50:14,690 - INFO - 127.0.0.1 - - [14/Jul/2025 12:50:14] "[31m[1mGIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:50:15,054 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:50:15] code 400, message Bad request version ('\x00/\x00')
+2025-07-14 12:50:15,055 - INFO - 127.0.0.1 - - [14/Jul/2025 12:50:15] "[31m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" 400 -
+2025-07-14 12:50:45,854 - ERROR - 127.0.0.1 - - [14/Jul/2025 12:50:45] code 400, message Bad HTTP/0.9 request type ('\x80\x00\x00(5\x8dÑÑ\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86')
+2025-07-14 12:50:45,855 - INFO - 127.0.0.1 - - [14/Jul/2025 12:50:45] "[31m[1m\x80\x00\x00(5\x8dÑÑ\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" 400 -
+2025-07-14 12:50:53,242 - INFO - Performing enhanced analysis for 127.0.0.1
+2025-07-14 12:50:53,244 - INFO - Running supplemental checks...
+2025-07-14 12:50:53,518 - INFO - 127.0.0.1 - - [14/Jul/2025 12:50:53] "POST / HTTP/1.1" 200 -
+2025-07-14 12:54:41,447 - INFO -  * Detected change in '/home/gig/Documents/musomi]/Project1/vulnerability-scanner/scanner.py', reloading
+2025-07-14 12:54:42,554 - INFO -  * Restarting with stat
+2025-07-14 12:57:03,466 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-07-14 12:57:03,466 - INFO - [33mPress CTRL+C to quit[0m
+2025-07-14 12:57:03,468 - INFO -  * Restarting with stat
+2025-07-14 12:57:04,457 - WARNING -  * Debugger is active!
+2025-07-14 12:57:04,461 - INFO -  * Debugger PIN: 237-702-066
