@@ -14,17 +14,15 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from fpdf import FPDF
 from fpdf.enums import XPos, YPos
-import getpass
 import concurrent.futures
 import re
 from urllib.parse import urlparse
 import subprocess
 import tempfile
 import shutil
-import signal
 import time
 
-# NEW: Import for Gemini AI
+# Import for Gemini AI
 import google.generativeai as genai
 
 # Configure logging
@@ -41,6 +39,8 @@ logger = logging.getLogger(__name__)
 class ScanType(Enum):
     NMAP = "nmap"
     OPENVAS = "openvas"
+    NESSUS = "nessus"
+    BURP = "burp"
     HYBRID = "hybrid"
 
 class Severity(Enum):
@@ -60,7 +60,7 @@ class Vulnerability:
     service: Optional[str] = None
     exploit_available: bool = False
     references: List[str] = None
-    ai_analysis: Optional[str] = None # NEW: Field to store AI-generated analysis
+    ai_analysis: Optional[str] = None
 
 @dataclass
 class HostResult:
@@ -76,26 +76,26 @@ class AdvancedVulnerabilityScanner:
         self.session_id = f"scan_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         self.temp_dir = tempfile.mkdtemp(prefix=f"vulnscan_{self.session_id}_")
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=5)
+        self.cancelled = False
         
         # Load API keys from environment
         self.vulners_api_key = os.getenv('VULNERS_API_KEY')
         self.nvd_api_key = os.getenv('NVD_API_KEY')
         self.shodan_api_key = os.getenv('SHODAN_API_KEY')
 
-        # NEW: Initialize Gemini AI model
+        # Initialize Gemini AI model
         self.gemini_api_key = os.getenv('GEMINI_API_KEY')
         self.gemini_model = None
         if self.gemini_api_key:
             try:
                 genai.configure(api_key=self.gemini_api_key)
-                self.gemini_model = genai.GenerativeModel("gemini-pro") # Consider "gemini-1.5-flash" for faster responses
+                self.gemini_model = genai.GenerativeModel("gemini-pro")
                 logger.info("Gemini AI model initialized successfully.")
             except Exception as e:
                 logger.error(f"Failed to initialize Gemini AI model: {e}. Gemini AI features will be disabled.")
-                self.gemini_api_key = None # Disable if initialization fails
+                self.gemini_api_key = None
         else:
             logger.warning("GEMINI_API_KEY environment variable not set. Gemini AI features will be disabled.")
-
 
         # Initialize OpenVAS/GVM client if configured
         self.openvas_enabled = False
@@ -117,6 +117,27 @@ class AdvancedVulnerabilityScanner:
         else:
             logger.info("OpenVAS not configured (OPENVAS_HOST not set)")
 
+        # Initialize Nessus if configured
+        self.nessus_enabled = False
+        if os.getenv('NESSUS_URL') and os.getenv('NESSUS_ACCESS_KEY') and os.getenv('NESSUS_SECRET_KEY') and os.getenv('NESSUS_POLICY_UUID'):
+            self.nessus_url = os.getenv('NESSUS_URL').rstrip('/')
+            self.nessus_access_key = os.getenv('NESSUS_ACCESS_KEY')
+            self.nessus_secret_key = os.getenv('NESSUS_SECRET_KEY')
+            self.nessus_policy_uuid = os.getenv('NESSUS_POLICY_UUID')
+            self.nessus_enabled = True
+            logger.info("Nessus integration enabled")
+        else:
+            logger.info("Nessus not configured (missing NESSUS_URL, NESSUS_ACCESS_KEY, NESSUS_SECRET_KEY, or NESSUS_POLICY_UUID)")
+
+        # Initialize Burp Suite API if configured
+        self.burp_enabled = False
+        if os.getenv('BURP_API_URL'):
+            self.burp_api_url = os.getenv('BURP_API_URL').rstrip('/')
+            self.burp_enabled = True
+            logger.info("Burp Suite integration enabled")
+        else:
+            logger.info("Burp Suite not configured (missing BURP_API_URL)")
+
     def __del__(self):
         """Clean up temporary files"""
         try:
@@ -127,26 +148,22 @@ class AdvancedVulnerabilityScanner:
     def validate_target(self, target: str) -> Tuple[bool, str]:
         """Validate target with multiple checks"""
         try:
-            # Check if it's a URL
             if target.startswith(('http://', 'https://')):
                 parsed = urlparse(target)
                 target = parsed.netloc.split(':')[0]
             
-            # IP validation
             try:
                 socket.inet_aton(target)
                 return True, "ip"
             except socket.error:
                 pass
                 
-            # Hostname validation
             try:
                 socket.gethostbyname(target)
                 return True, "hostname"
             except socket.error:
                 pass
                 
-            # CIDR range validation
             if '/' in target:
                 parts = target.split('/')
                 if len(parts) == 2 and parts[1].isdigit() and 0 <= int(parts[1]) <= 32:
@@ -161,9 +178,14 @@ class AdvancedVulnerabilityScanner:
             logger.error(f"Validation error: {str(e)}")
             return False, "error"
 
-    def run_scan(self, target: str, scan_type: ScanType = ScanType.HYBRID) -> Dict:
+    def run_scan(self, target: str, scan_type: ScanType = ScanType.HYBRID, progress_callback=None) -> Dict:
         """Orchestrate scanning process"""
+        if progress_callback:
+            progress_callback(0, "Starting scan")
+            
         valid, target_type = self.validate_target(target)
+        if progress_callback:
+            progress_callback(5, "Target validated")
         if not valid:
             raise ValueError(f"Invalid target format: {target}")
             
@@ -178,33 +200,76 @@ class AdvancedVulnerabilityScanner:
         }
         
         try:
-            # Run scans based on type
+            if self.cancelled:
+                raise KeyboardInterrupt("Scan cancelled")
             if scan_type in [ScanType.NMAP, ScanType.HYBRID]:
+                if progress_callback:
+                    progress_callback(10, "Starting Nmap scan")
                 nmap_results = self._run_advanced_nmap_scan(target)
                 results["results"]["nmap"] = nmap_results
-                
-                # Enhanced vulnerability analysis
+                if progress_callback:
+                    progress_callback(30, "Nmap scan completed")
+                if self.cancelled:
+                    raise KeyboardInterrupt("Scan cancelled")
                 if nmap_results.get("hosts"):
+                    if progress_callback:
+                        progress_callback(35, "Performing enhanced vulnerability analysis")
                     for host in nmap_results["hosts"]:
-                        # This method now also handles AI analysis
-                        self._enhanced_vulnerability_analysis(host) 
+                        self._enhanced_vulnerability_analysis(host, progress_callback)
+                    if progress_callback:
+                        progress_callback(40, "Enhanced vulnerability analysis completed")
                 
+            if self.cancelled:
+                raise KeyboardInterrupt("Scan cancelled")
             if scan_type in [ScanType.OPENVAS, ScanType.HYBRID] and self.openvas_enabled:
-                openvas_results = self._run_openvas_scan(target)
+                if progress_callback:
+                    progress_callback(45, "Starting OpenVAS scan")
+                openvas_results = self._run_openvas_scan(target, progress_callback)
                 results["results"]["openvas"] = openvas_results
+                if progress_callback:
+                    progress_callback(65, "OpenVAS scan completed")
                 
-            # Additional checks
+            if self.cancelled:
+                raise KeyboardInterrupt("Scan cancelled")
+            if scan_type in [ScanType.NESSUS, ScanType.HYBRID] and self.nessus_enabled:
+                if progress_callback:
+                    progress_callback(70, "Starting Nessus scan")
+                nessus_results = self._run_nessus_scan(target, progress_callback)
+                results["results"]["nessus"] = nessus_results
+                if progress_callback:
+                    progress_callback(85, "Nessus scan completed")
+                
+            if self.cancelled:
+                raise KeyboardInterrupt("Scan cancelled")
+            if scan_type in [ScanType.BURP, ScanType.HYBRID] and self.burp_enabled:
+                if progress_callback:
+                    progress_callback(90, "Starting Burp Suite scan")
+                burp_results = self._run_burp_scan(target, results)
+                if burp_results:
+                    results["results"]["burp"] = burp_results
+                if progress_callback:
+                    progress_callback(95, "Burp Suite scan completed")
+                
+            if self.cancelled:
+                raise KeyboardInterrupt("Scan cancelled")
             if scan_type == ScanType.HYBRID:
+                if progress_callback:
+                    progress_callback(97, "Running supplemental checks")
                 self._run_supplemental_checks(target, results)
                 
+            if progress_callback:
+                progress_callback(99, "Finalizing results")
+                
         except KeyboardInterrupt:
-            logger.info("Scan interrupted by user")
-            raise
+            logger.info("Scan cancelled")
+            results["error"] = "Scan cancelled by user"
         except Exception as e:
             logger.error(f"Scan failed: {str(e)}", exc_info=True)
             results["error"] = str(e)
             
         results["metadata"]["end_time"] = datetime.now(timezone.utc).isoformat()
+        if progress_callback:
+            progress_callback(100, "Scan completed" if not results.get("error") else f"Scan failed: {results.get('error')}")
         return results
 
     def _run_advanced_nmap_scan(self, target: str) -> Dict:
@@ -225,6 +290,8 @@ class AdvancedVulnerabilityScanner:
             results = {"hosts": []}
             
             for host in self.nmap_scanner.all_hosts():
+                if self.cancelled:
+                    raise KeyboardInterrupt("Scan cancelled")
                 host_data = {
                     "ip": host,
                     "status": self.nmap_scanner[host].state(),
@@ -232,16 +299,13 @@ class AdvancedVulnerabilityScanner:
                     "vulnerabilities": []
                 }
                 
-                # Get hostnames if available
                 hostnames = self.nmap_scanner[host].hostnames()
                 if hostnames:
                     host_data["hostnames"] = [h["name"] for h in hostnames if h["name"]]
                 
-                # Get OS information if available
                 if "osmatch" in self.nmap_scanner[host]:
                     host_data["os"] = self.nmap_scanner[host]["osmatch"][0]["name"]
                 
-                # Process ports and services
                 for proto in self.nmap_scanner[host].all_protocols():
                     for port in self.nmap_scanner[host][proto].keys():
                         port_data = self.nmap_scanner[host][proto][port]
@@ -255,21 +319,16 @@ class AdvancedVulnerabilityScanner:
                             "scripts": []
                         }
                         
-                        # Process NSE script output
                         if "script" in port_data:
                             for script, output in port_data["script"].items():
                                 script_data = {"name": script, "output": output}
-                                
-                                # Extract CVEs from script output
                                 cves = self._extract_cves(output)
                                 if cves:
                                     script_data["cves"] = cves
-                                    
                                 service_info["scripts"].append(script_data)
                         
                         host_data["ports"].append(service_info)
                         
-                        # Check for known vulnerabilities
                         if port_data["name"] and port_data.get("product"):
                             vulns = self._check_service_vulnerabilities(
                                 port_data["name"],
@@ -291,7 +350,7 @@ class AdvancedVulnerabilityScanner:
             logger.error(f"Unexpected error during Nmap scan: {str(e)}")
             return {"error": str(e)}
 
-    def _run_openvas_scan(self, target: str) -> Dict:
+    def _run_openvas_scan(self, target: str, progress_callback=None) -> Dict:
         """Run OpenVAS/GVM scan with result processing"""
         if not self.openvas_enabled:
             return {"error": "OpenVAS not configured"}
@@ -299,7 +358,6 @@ class AdvancedVulnerabilityScanner:
         logger.info("Starting OpenVAS scan...")
         
         try:
-            # Start scan
             scan_result = self.openvas_client.start_scan([target])
             if not scan_result or 'task_id' not in scan_result:
                 return {"error": "Failed to start OpenVAS scan"}
@@ -307,14 +365,20 @@ class AdvancedVulnerabilityScanner:
             task_id = scan_result['task_id']
             logger.info(f"OpenVAS scan started with ID: {task_id}")
             
-            # Monitor scan progress
+            progress = 45
             while True:
+                if self.cancelled:
+                    # Attempt to stop the scan
+                    self.openvas_client.stop_scan(task_id)
+                    raise KeyboardInterrupt("Scan cancelled")
                 status = self.openvas_client.get_scan_status(task_id)
+                if progress_callback:
+                    progress_callback(min(progress, 60), f"OpenVAS status: {status.get('status')}")
                 if status.get('status') in ["Done", "Stopped", "Interrupted"]:
                     break
                 time.sleep(30)
+                progress += 5
                 
-            # Get results
             results = self.openvas_client.get_results(task_id)
             if not results or results.get('status') != 'completed':
                 return {"error": "No results from OpenVAS scan"}
@@ -325,16 +389,169 @@ class AdvancedVulnerabilityScanner:
             logger.error(f"OpenVAS scan failed: {str(e)}")
             return {"error": str(e)}
 
+    def _run_nessus_scan(self, target: str, progress_callback=None) -> Dict:
+        """Run Nessus scan via API and process results"""
+        if not self.nessus_enabled:
+            return {"error": "Nessus not configured"}
+            
+        logger.info("Starting Nessus scan...")
+        
+        try:
+            headers = {
+                'X-Api-Keys': f'accessKey={self.nessus_access_key}; secretKey={self.nessus_secret_key}',
+                'Content-Type': 'application/json'
+            }
+            
+            create_data = {
+                "uuid": self.nessus_policy_uuid,
+                "settings": {
+                    "name": f"Automated Scan {self.session_id}",
+                    "description": "VulnScanner automated scan",
+                    "text_targets": target,
+                    "enabled": True
+                }
+            }
+            response = requests.post(f"{self.nessus_url}/scans", headers=headers, json=create_data, verify=False, timeout=30)
+            response.raise_for_status()
+            scan_id = response.json()['scan']['id']
+            logger.info(f"Nessus scan created with ID: {scan_id}")
+            
+            response = requests.post(f"{self.nessus_url}/scans/{scan_id}/launch", headers=headers, verify=False, timeout=30)
+            response.raise_for_status()
+            
+            start_time = time.time()
+            progress = 70
+            while time.time() - start_time < 3600:
+                if self.cancelled:
+                    # Attempt to cancel Nessus scan
+                    requests.post(f"{self.nessus_url}/scans/{scan_id}/stop", headers=headers, verify=False)
+                    raise KeyboardInterrupt("Scan cancelled")
+                response = requests.get(f"{self.nessus_url}/scans/{scan_id}", headers=headers, verify=False, timeout=30)
+                response.raise_for_status()
+                status = response.json()['info']['status']
+                if progress_callback:
+                    progress_callback(min(progress, 80), f"Nessus status: {status}")
+                if status == 'completed':
+                    break
+                elif status in ['canceled', 'aborted']:
+                    return {"error": f"Scan {status}"}
+                time.sleep(30)
+                progress += 2
+            
+            response = requests.get(f"{self.nessus_url}/scans/{scan_id}", headers=headers, verify=False, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            
+            vulnerabilities = []
+            for vuln in data.get('vulnerabilities', []):
+                vulnerabilities.append({
+                    "plugin_id": vuln.get('plugin_id'),
+                    "name": vuln.get('plugin_name'),
+                    "severity": self._normalize_severity(vuln.get('severity', 0)).value,
+                    "count": vuln.get('count'),
+                    "description": vuln.get('plugin_name')
+                })
+            
+            return {
+                "vulnerabilities": vulnerabilities,
+                "hosts": [h['hostname'] for h in data.get('hosts', [])],
+                "summary": {
+                    "critical": sum(1 for v in vulnerabilities if v['severity'] == 'Critical'),
+                    "high": sum(1 for v in vulnerabilities if v['severity'] == 'High'),
+                    "medium": sum(1 for v in vulnerabilities if v['severity'] == 'Medium'),
+                    "low": sum(1 for v in vulnerabilities if v['severity'] == 'Low')
+                }
+            }
+            
+        except requests.RequestException as e:
+            logger.error(f"Nessus API error: {str(e)}")
+            return {"error": f"Nessus API error: {str(e)}"}
+        except Exception as e:
+            logger.error(f"Nessus scan failed: {str(e)}")
+            return {"error": str(e)}
+
+    def _run_burp_scan(self, target: str, results: Dict, progress_callback=None) -> Optional[Dict]:
+        """Run Burp Suite web vulnerability scan if web ports are detected"""
+        if not self.burp_enabled:
+            return None
+            
+        web_urls = []
+        if "nmap" in results["results"] and results["results"]["nmap"].get("hosts"):
+            for host in results["results"]["nmap"]["hosts"]:
+                for port in host.get("ports", []):
+                    if port["port"] in [80, 443] and port["state"] == "open":
+                        protocol = "https" if port["port"] == 443 else "http"
+                        web_url = f"{protocol}://{host['ip']}"
+                        web_urls.append(web_url)
+        
+        if not web_urls:
+            logger.info("No web ports detected for Burp scan")
+            return None
+            
+        logger.info(f"Starting Burp Suite scan for URLs: {web_urls}")
+        
+        try:
+            headers = {'Content-Type': 'application/json'}
+            data = {
+                "application_logins": [],
+                "scan_configurations": [],
+                "urls": web_urls
+            }
+            response = requests.post(f"{self.burp_api_url}/v0.1/scan", headers=headers, json=data, timeout=30)
+            response.raise_for_status()
+            task_id = response.headers.get('Location', '').split('/')[-1]
+            if not task_id:
+                raise ValueError("No task ID returned")
+            logger.info(f"Burp scan started with task ID: {task_id}")
+            
+            start_time = time.time()
+            progress = 90
+            while time.time() - start_time < 3600:
+                if self.cancelled:
+                    # Attempt to cancel Burp scan if API supports it
+                    # Assuming no cancel endpoint, just raise
+                    raise KeyboardInterrupt("Scan cancelled")
+                response = requests.get(f"{self.burp_api_url}/v0.1/scan/{task_id}", headers=headers, timeout=30)
+                response.raise_for_status()
+                scan_data = response.json()
+                status = scan_data.get('scan_status')
+                if progress_callback:
+                    progress_callback(min(progress, 94), f"Burp scan status: {status}")
+                if status == 'succeeded':
+                    break
+                elif status == 'failed':
+                    return {"error": "Burp scan failed"}
+                time.sleep(30)
+                progress += 1
+            
+            issues = []
+            for issue in scan_data.get('issue_events', []):
+                issues.append({
+                    "type": issue['issue'].get('type'),
+                    "severity": issue['issue'].get('severity'),
+                    "description": issue['issue'].get('description'),
+                    "url": issue['issue'].get('origin')
+                })
+            
+            return {"issues": issues, "scanned_urls": web_urls}
+            
+        except requests.RequestException as e:
+            logger.error(f"Burp API error: {str(e)}")
+            return {"error": f"Burp API error: {str(e)}"}
+        except Exception as e:
+            logger.error(f"Burp scan failed: {str(e)}")
+            return {"error": str(e)}
+
     def _run_supplemental_checks(self, target: str, results: Dict):
         """Run additional security checks"""
+        if self.cancelled:
+            return
         logger.info("Running supplemental checks...")
         
-        # DNS checks
         dns_results = self._run_dns_checks(target)
         if dns_results:
             results["results"]["dns"] = dns_results
             
-        # SSL/TLS checks (if HTTPS ports found)
         if any(port.get("service") == "https" 
                for host in results.get("results", {}).get("nmap", {}).get("hosts", [])
                for port in host.get("ports", [])):
@@ -342,48 +559,58 @@ class AdvancedVulnerabilityScanner:
             if ssl_results:
                 results["results"]["ssl"] = ssl_results
                 
-        # Shodan lookup if API key available
         if self.shodan_api_key:
             shodan_results = self._run_shodan_lookup(target)
             if shodan_results:
                 results["results"]["shodan"] = shodan_results
 
-    def _enhanced_vulnerability_analysis(self, host: Dict):
+    def _enhanced_vulnerability_analysis(self, host: Dict, progress_callback=None):
         """Perform deeper analysis on discovered services and get AI insights"""
+        if self.cancelled:
+            return
         logger.info(f"Performing enhanced analysis for {host.get('ip')}")
         
         futures = []
-        cve_vulns = [] # To store vulnerabilities with CVEs for exploit and AI check
+        cve_vulns = []
+        total_vulns = len(host.get("vulnerabilities", []))
 
-        # Collect vulnerabilities that have CVEs for exploit and AI analysis
         for vuln_idx, vuln in enumerate(host.get("vulnerabilities", [])):
-            if vuln.get("cve"):
+            if self.cancelled:
+                return
+            if vuln.cve:
                 cve_vulns.append((vuln_idx, vuln))
                 futures.append(
                     self.executor.submit(
                         self._check_exploit_availability,
-                        vuln["cve"]
+                        vuln.cve
                     )
                 )
+            if progress_callback and total_vulns > 0:
+                progress_callback(35 + (vuln_idx + 1) * 2 / total_vulns, f"Checking exploits for vulnerability {vuln_idx + 1}/{total_vulns}")
         
-        # Update with exploit info
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
-            original_idx = cve_vulns[i][0] # Get the original index
+            if self.cancelled:
+                return
+            original_idx = cve_vulns[i][0]
             host["vulnerabilities"][original_idx].exploit_available = future.result()
 
-        # NEW: Get AI-generated analysis for each vulnerability
-        if self.gemini_api_key and self.gemini_model: # Check if Gemini is enabled
+        if self.gemini_api_key and self.gemini_model:
             ai_futures = []
             for vuln_idx, vuln_obj in enumerate(host.get("vulnerabilities", [])):
+                if self.cancelled:
+                    return
                 ai_futures.append(
                     self.executor.submit(
                         self._get_gemini_vulnerability_analysis,
                         vuln_obj,
-                        host # Pass the host's overall information as context
+                        host
                     )
                 )
-            
             for i, future in enumerate(concurrent.futures.as_completed(ai_futures)):
+                if self.cancelled:
+                    return
+                if progress_callback and total_vulns > 0:
+                    progress_callback(37 + (i + 1) * 3 / total_vulns, f"Performing AI analysis for vulnerability {i + 1}/{total_vulns}")
                 ai_result = future.result()
                 if ai_result:
                     host["vulnerabilities"][i].ai_analysis = ai_result["explanation"]
@@ -391,15 +618,11 @@ class AdvancedVulnerabilityScanner:
                     host["vulnerabilities"][i].ai_analysis = "AI analysis not available for this vulnerability."
 
     def _get_gemini_vulnerability_analysis(self, vulnerability: Vulnerability, host_info: Dict) -> Optional[Dict]:
-        """
-        Generates an explanation, impact, and recommendations for a given vulnerability
-        using Gemini AI.
-        """
+        """Generates an explanation, impact, and recommendations for a given vulnerability using Gemini AI"""
         if not self.gemini_api_key or not self.gemini_model:
             logger.debug("Gemini AI is not enabled or initialized.")
             return None
 
-        # Prepare context for Gemini
         host_ip = host_info.get("ip", "N/A")
         hostname = ", ".join(host_info.get("hostnames", [])) if host_info.get("hostnames") else "N/A"
         os_info = host_info.get("os", "Unknown OS")
@@ -449,7 +672,7 @@ class AdvancedVulnerabilityScanner:
             if response.text:
                 logger.info(f"Successfully received Gemini analysis for {vulnerability.cve}.")
                 return {
-                    "explanation": response.text # Gemini's full response
+                    "explanation": response.text
                 }
             else:
                 logger.warning(f"Gemini returned an empty response for {vulnerability.cve}.")
@@ -460,24 +683,26 @@ class AdvancedVulnerabilityScanner:
 
     def _check_service_vulnerabilities(self, service: str, product: str, version: str, port: int) -> List[Vulnerability]:
         """Check for known vulnerabilities in a service"""
+        if self.cancelled:
+            return []
         vulns = []
         
-        # Check Vulners database
         if self.vulners_api_key:
             vulns.extend(self._query_vulners(service, product, version))
             
-        # Check NVD database
         if self.nvd_api_key:
             vulns.extend(self._query_nvd(service, product, version))
             
-        # Add port information to vulnerabilities
         for vuln in vulns:
             vuln.port = port
+            vuln.service = service
             
         return vulns
 
     def _query_vulners(self, service: str, product: str, version: str) -> List[Vulnerability]:
         """Query Vulners API for vulnerabilities"""
+        if self.cancelled:
+            return []
         try:
             query = f"{product} {version}"
             url = f"https://vulners.com/api/v3/search/lucene/?query={query}"
@@ -513,6 +738,8 @@ class AdvancedVulnerabilityScanner:
 
     def _query_nvd(self, service: str, product: str, version: str) -> List[Vulnerability]:
         """Query NVD API for vulnerabilities"""
+        if self.cancelled:
+            return []
         try:
             query = f"{product} {version}"
             url = f"https://services.nvd.nist.gov/rest/json/cves/1.0?keyword={query}"
@@ -528,7 +755,6 @@ class AdvancedVulnerabilityScanner:
                     if not cve:
                         continue
                         
-                    # Get CVSS v3 score if available, fall back to v2
                     cvss_v3 = item.get("impact", {}).get("baseMetricV3", {}).get("cvssV3", {}).get("baseScore")
                     cvss_v2 = item.get("impact", {}).get("baseMetricV2", {}).get("cvssV2", {}).get("baseScore")
                     cvss = float(cvss_v3) if cvss_v3 is not None else float(cvss_v2) if cvss_v2 is not None else 0.0
@@ -551,8 +777,9 @@ class AdvancedVulnerabilityScanner:
 
     def _check_exploit_availability(self, cve: str) -> bool:
         """Check if exploit is available for a CVE"""
+        if self.cancelled:
+            return False
         try:
-            # Check ExploitDB
             exploitdb_path = Path("/usr/share/exploitdb/exploits")
             if exploitdb_path.exists():
                 grep_cmd = f"grep -r '{cve}' {exploitdb_path}"
@@ -560,7 +787,6 @@ class AdvancedVulnerabilityScanner:
                 if result.returncode == 0 and cve in result.stdout:
                     return True
                     
-            # Check Metasploit
             msf_path = Path("/usr/share/metasploit-framework/modules/exploits")
             if msf_path.exists():
                 grep_cmd = f"grep -r '{cve}' {msf_path}"
@@ -568,7 +794,6 @@ class AdvancedVulnerabilityScanner:
                 if result.returncode == 0 and cve in result.stdout:
                     return True
                     
-            # Check Vulners for known exploits
             if self.vulners_api_key:
                 url = f"https://vulners.com/api/v3/search/id/?id={cve}"
                 headers = {"X-Api-Key": self.vulners_api_key}
@@ -585,6 +810,8 @@ class AdvancedVulnerabilityScanner:
 
     def _run_dns_checks(self, target: str) -> Dict:
         """Perform DNS reconnaissance"""
+        if self.cancelled:
+            return {}
         try:
             import dns.resolver
             results = {}
@@ -593,14 +820,12 @@ class AdvancedVulnerabilityScanner:
             resolver.timeout = 5
             resolver.lifetime = 5
             
-            # Basic resolution
             try:
                 answers = resolver.resolve(target, 'A')
                 results["A"] = [str(r) for r in answers]
             except:
                 pass
                 
-            # MX records if domain
             if '.' in target and not target[0].isdigit():
                 try:
                     answers = resolver.resolve(target, 'MX')
@@ -608,7 +833,6 @@ class AdvancedVulnerabilityScanner:
                 except:
                     pass
                     
-            # TXT records
             try:
                 answers = resolver.resolve(target, 'TXT')
                 results["TXT"] = [str(r) for r in answers]
@@ -626,6 +850,8 @@ class AdvancedVulnerabilityScanner:
 
     def _run_ssl_checks(self, target: str) -> Dict:
         """Perform SSL/TLS checks using testssl.sh"""
+        if self.cancelled:
+            return {}
         try:
             testssl_path = shutil.which("testssl.sh")
             if not testssl_path:
@@ -646,7 +872,6 @@ class AdvancedVulnerabilityScanner:
             with open(output_file, 'r') as f:
                 data = json.load(f)
                 
-            # Process results into critical findings
             findings = []
             for item in data:
                 if item.get("severity") in ["HIGH", "CRITICAL"]:
@@ -665,27 +890,26 @@ class AdvancedVulnerabilityScanner:
 
     def _run_shodan_lookup(self, target: str) -> Dict:
         """Query Shodan for internet exposure"""
+        if self.cancelled:
+            return {}
         try:
             import shodan
             api = shodan.Shodan(self.shodan_api_key)
             
-            # Remove port if present
             target = target.split(':')[0]
             
-            # Check if it's an IP or hostname
             try:
                 socket.inet_aton(target)
                 result = api.host(target)
             except socket.error:
                 result = api.search(f"hostname:{target}")
                 
-            # Process results
             processed = {
                 "ports": [],
                 "vulnerabilities": []
             }
             
-            if isinstance(result, dict):  # IP lookup result
+            if isinstance(result, dict):
                 for item in result.get("data", []):
                     port_info = {
                         "port": item.get("port"),
@@ -701,7 +925,7 @@ class AdvancedVulnerabilityScanner:
                         "verified": result["vulns"][vuln].get("verified", False)
                     })
                     
-            elif isinstance(result, list):  # Hostname search result
+            elif isinstance(result, list):
                 for host in result:
                     for item in host.get("data", []):
                         port_info = {
@@ -752,7 +976,7 @@ class AdvancedVulnerabilityScanner:
             return Severity.LOW
         return Severity.INFO
 
-    def generate_report(self, results: Dict, format: str = "console") -> bool:
+    def generate_report(self, results: Dict, format: str = "console", filename: Optional[str] = None) -> bool:
         """Generate report in specified format"""
         if not results:
             return False
@@ -761,10 +985,11 @@ class AdvancedVulnerabilityScanner:
             if format == "console":
                 self._print_console_report(results)
             elif format == "json":
-                with open(f"scan_report_{self.session_id}.json", 'w') as f:
+                output_filename = filename or f"scan_report_{self.session_id}.json"
+                with open(output_filename, 'w') as f:
                     json.dump(results, f, indent=2)
             elif format == "pdf":
-                self._generate_pdf_report(results)
+                self._generate_pdf_report(results, filename)
             else:
                 logger.error(f"Unsupported report format: {format}")
                 return False
@@ -783,7 +1008,6 @@ class AdvancedVulnerabilityScanner:
         print(f"Started: {results['metadata']['start_time']}")
         print(f"Completed: {results['metadata']['end_time']}")
         
-        # Nmap results
         if "nmap" in results["results"]:
             print("\n--- Nmap Results ---")
             for host in results["results"]["nmap"].get("hosts", []):
@@ -804,25 +1028,16 @@ class AdvancedVulnerabilityScanner:
                 if host.get("vulnerabilities"):
                     print("\nVulnerabilities:")
                     for vuln in host["vulnerabilities"]:
-                        # Support both dict and dataclass object
-                        cve = getattr(vuln, "cve", vuln.get("cve")) if isinstance(vuln, dict) else vuln.cve
-                        severity = getattr(vuln, "severity", vuln.get("severity")) if isinstance(vuln, dict) else vuln.severity
-                        cvss = getattr(vuln, "cvss", vuln.get("cvss")) if isinstance(vuln, dict) else vuln.cvss
-                        description = getattr(vuln, "description", vuln.get("description")) if isinstance(vuln, dict) else vuln.description
-                        exploit_available = getattr(vuln, "exploit_available", vuln.get("exploit_available", False)) if isinstance(vuln, dict) else vuln.exploit_available
-                        ai_analysis = getattr(vuln, "ai_analysis", vuln.get("ai_analysis")) if isinstance(vuln, dict) else vuln.ai_analysis
-
-                        print(f"  {cve} ({severity.value if hasattr(severity, 'value') else severity} - CVSS: {cvss})")
-                        if exploit_available:
+                        print(f"  {vuln.cve} ({vuln.severity.value} - CVSS: {vuln.cvss})")
+                        if vuln.exploit_available:
                             print("    [EXPLOIT AVAILABLE]")
-                        print(f"    Description: {description}")
-                        if ai_analysis:
+                        print(f"    Description: {vuln.description}")
+                        if vuln.ai_analysis:
                             print("\n    AI-Generated Analysis & Recommendations:")
-                            for line in ai_analysis.splitlines():
+                            for line in vuln.ai_analysis.splitlines():
                                 print(f"    {line.strip()}")
                         print("-" * 40)
                         
-        # OpenVAS results (No changes here, as AI integration focuses on Nmap-detected vulns for this version)
         if "openvas" in results["results"]:
             print("\n--- OpenVAS Results ---")
             ov_results = results["results"]["openvas"]
@@ -839,8 +1054,30 @@ class AdvancedVulnerabilityScanner:
                 if finding.get("cves"):
                     print(f"CVEs: {', '.join(finding['cves'])}")
                 print(f"\nDescription:\n{finding['description']}")
+        
+        if "nessus" in results["results"]:
+            print("\n--- Nessus Results ---")
+            nessus_results = results["results"]["nessus"]
+            print(f"Critical: {nessus_results.get('summary', {}).get('critical', 0)}")
+            print(f"High: {nessus_results.get('summary', {}).get('high', 0)}")
+            print(f"Medium: {nessus_results.get('summary', {}).get('medium', 0)}")
+            print(f"Low: {nessus_results.get('summary', {}).get('low', 0)}")
+            
+            for vuln in nessus_results.get("vulnerabilities", []):
+                print(f"\n[{vuln['severity']}] {vuln['name']} (Count: {vuln['count']})")
+                print(f"Plugin ID: {vuln['plugin_id']}")
+                print(f"Description: {vuln['description']}")
                 
-        # Supplemental results (No changes here)
+        if "burp" in results["results"]:
+            print("\n--- Burp Suite Web Vulnerabilities ---")
+            burp_results = results["results"]["burp"]
+            print(f"Scanned URLs: {', '.join(burp_results.get('scanned_urls', []))}")
+            
+            for issue in burp_results.get("issues", []):
+                print(f"\n[{issue['severity']}] {issue['type']}")
+                print(f"URL: {issue.get('url', 'N/A')}")
+                print(f"Description: {issue['description']}")
+                
         if "ssl" in results["results"]:
             print("\n--- SSL/TLS Findings ---")
             for finding in results["results"]["ssl"].get("findings", []):
@@ -851,13 +1088,12 @@ class AdvancedVulnerabilityScanner:
                 
         print("\n=== END OF REPORT ===")
 
-    def _generate_pdf_report(self, results: Dict):
+    def _generate_pdf_report(self, results: Dict, filename: Optional[str] = None):
         """Generate a detailed PDF report using FPDF2"""
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("helvetica", size=12)
         
-        # Header
         pdf.cell(200, 10, text="VULNERABILITY SCAN REPORT", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C')
         pdf.set_font("helvetica", size=10)
         pdf.cell(200, 5, text=f"Scan ID: {results['metadata']['session_id']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -866,7 +1102,6 @@ class AdvancedVulnerabilityScanner:
                new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(10)
         
-        # Nmap results
         if "nmap" in results["results"]:
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="Nmap Scan Results", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -886,7 +1121,6 @@ class AdvancedVulnerabilityScanner:
                 for port in host.get("ports", []):
                     pdf.cell(200, 8, text=f"  {port['port']}/{port['protocol']}: {port['service']} {port.get('version', '')}", 
                            new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-                    # NSE Scripts
                     for script in port.get("scripts", []):
                         pdf.set_font(style="I")
                         pdf.cell(200, 8, text=f"    Script: {script['name']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -896,44 +1130,33 @@ class AdvancedVulnerabilityScanner:
                         if script.get("cves"):
                             pdf.cell(200, 8, text=f"      CVEs: {', '.join(script['cves'])}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                     pdf.ln(1)
-                # Vulnerabilities
                 if host.get("vulnerabilities"):
                     pdf.set_font("helvetica", style="B", size=11)
                     pdf.cell(200, 8, text="Vulnerabilities:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                     pdf.set_font("helvetica", size=10)
                     
                     for vuln in host["vulnerabilities"]:
-                        cve = getattr(vuln, "cve", vuln.get("cve")) if isinstance(vuln, dict) else vuln.cve
-                        severity = getattr(vuln, "severity", vuln.get("severity")) if isinstance(vuln, dict) else vuln.severity
-                        cvss = getattr(vuln, "cvss", vuln.get("cvss")) if isinstance(vuln, dict) else vuln.cvss
-                        description = getattr(vuln, "description", vuln.get("description")) if isinstance(vuln, dict) else vuln.description
-                        exploit_available = getattr(vuln, "exploit_available", vuln.get("exploit_available", False)) if isinstance(vuln, dict) else vuln.exploit_available
-                        ai_analysis = getattr(vuln, "ai_analysis", vuln.get("ai_analysis")) if isinstance(vuln, dict) else vuln.ai_analysis
-
                         pdf.set_font(style="B")
-                        pdf.cell(200, 7, text=f"  CVE: {cve} ({severity.value if hasattr(severity, 'value') else severity} - CVSS: {cvss})", 
+                        pdf.cell(200, 7, text=f"  CVE: {vuln.cve} ({vuln.severity.value} - CVSS: {vuln.cvss})", 
                                new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                         pdf.set_font(style="")
-                        if exploit_available:
+                        if vuln.exploit_available:
                             pdf.cell(200, 6, text="    [EXPLOIT AVAILABLE]", new_x=XPos.LMARGIN, new_y=YPos.NEXT, fill=True, border=1, align='C')
-                        pdf.multi_cell(0, 6, text=f"    Description: {description}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-
-                        if ai_analysis:
+                        pdf.multi_cell(0, 6, text=f"    Description: {vuln.description}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                        if vuln.ai_analysis:
                             pdf.set_font("helvetica", style="I", size=9)
                             pdf.multi_cell(0, 5, text="    AI-Generated Analysis & Recommendations:", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                             pdf.set_font("helvetica", size=9)
-                            for line in ai_analysis.splitlines():
+                            for line in vuln.ai_analysis.splitlines():
                                 if line.strip():
                                     pdf.multi_cell(0, 4, text=f"    {line.strip()}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                             pdf.ln(2)
                         pdf.ln(5)
         
-        # OpenVAS results (No changes here, as AI integration focuses on Nmap-detected vulns for this version)
         if "openvas" in results["results"]:
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="OpenVAS Scan Results", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.set_font("helvetica", size=10)
-
             ov_results = results["results"]["openvas"]
             pdf.cell(200, 6, text=f"Scan ID: {ov_results.get('scan_id', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.cell(200, 6, text=f"Total Findings: {ov_results.get('summary', {}).get('total', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -953,7 +1176,41 @@ class AdvancedVulnerabilityScanner:
                 pdf.multi_cell(0, 6, text=f"Description:\n{finding['description']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 pdf.ln(5)
 
-        # SSL/TLS Findings (No changes here)
+        if "nessus" in results["results"]:
+            pdf.set_font("helvetica", style="B", size=12)
+            pdf.cell(200, 10, text="Nessus Scan Results", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.set_font("helvetica", size=10)
+            nessus_results = results["results"]["nessus"]
+            pdf.cell(200, 6, text=f"Critical: {nessus_results.get('summary', {}).get('critical', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"High: {nessus_results.get('summary', {}).get('high', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Medium: {nessus_results.get('summary', {}).get('medium', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(200, 6, text=f"Low: {nessus_results.get('summary', {}).get('low', 0)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.ln(5)
+            
+            for vuln in nessus_results.get("vulnerabilities", []):
+                pdf.set_font(style="B")
+                pdf.cell(200, 7, text=f"[{vuln['severity']}] {vuln['name']} (Count: {vuln['count']})", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.set_font(style="")
+                pdf.cell(200, 6, text=f"Plugin ID: {vuln['plugin_id']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.multi_cell(0, 6, text=f"Description: {vuln['description']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.ln(5)
+
+        if "burp" in results["results"]:
+            pdf.set_font("helvetica", style="B", size=12)
+            pdf.cell(200, 10, text="Burp Suite Web Scan Results", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.set_font("helvetica", size=10)
+            burp_results = results["results"]["burp"]
+            pdf.cell(200, 6, text=f"Scanned URLs: {', '.join(burp_results.get('scanned_urls', []))}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.ln(5)
+            
+            for issue in burp_results.get("issues", []):
+                pdf.set_font(style="B")
+                pdf.cell(200, 7, text=f"[{issue['severity']}] {issue['type']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.set_font(style="")
+                pdf.cell(200, 6, text=f"URL: {issue.get('url', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.multi_cell(0, 6, text=f"Description: {issue['description']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.ln(5)
+
         if "ssl" in results["results"] and results["results"]["ssl"] and results["results"]["ssl"].get("findings"):
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="SSL/TLS Findings", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -967,7 +1224,6 @@ class AdvancedVulnerabilityScanner:
                 pdf.multi_cell(0, 6, text=f"Finding: {finding['finding']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 pdf.ln(5)
 
-        # Shodan Results (No changes here)
         if "shodan" in results["results"] and results["results"]["shodan"]:
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="Shodan Internet Exposure", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -984,7 +1240,6 @@ class AdvancedVulnerabilityScanner:
                     pdf.multi_cell(0, 6, text=f"  ID: {v.get('id')}, Verified: {v.get('verified')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.ln(5)
 
-        # DNS Results (No changes here)
         if "dns" in results["results"] and results["results"]["dns"]:
             pdf.set_font("helvetica", style="B", size=12)
             pdf.cell(200, 10, text="DNS Records", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -993,20 +1248,17 @@ class AdvancedVulnerabilityScanner:
                 pdf.multi_cell(0, 6, text=f"  {record_type}: {', '.join(records)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.ln(5)
 
-        output_filename = f"scan_report_{self.session_id}.pdf"
+        output_filename = filename or f"scan_report_{self.session_id}.pdf"
         pdf.output(output_filename)
         logger.info(f"PDF report generated: {output_filename}")
 
-# Main execution block
 if __name__ == "__main__":
-    # Banner
     print("=" * 60)
     print("        ADVANCED VULNERABILITY SCANNER".center(60))
     print("        by K.Musomi".center(60))
     print("=" * 60)
     print()
 
-    # Prompt for target
     target_input = input("Enter target IP or hostname: ").strip()
     while not target_input:
         target_input = input("Target cannot be empty. Enter target IP or hostname: ").strip()
@@ -1015,10 +1267,12 @@ if __name__ == "__main__":
     print("Scan Types:")
     print("  nmap    - Fast service & vulnerability scan")
     print("  openvas - Deep authenticated vulnerability scan (if configured)")
-    print("  hybrid  - Both Nmap and OpenVAS (recommended)")
+    print("  nessus  - Comprehensive vulnerability scan via Nessus (if configured)")
+    print("  burp    - Web application vulnerability scan via Burp Suite (if configured and web ports detected)")
+    print("  hybrid  - All enabled scanners (recommended)")
     print("-" * 60)
-    scan_type_str = input("Scan type? (nmap/openvas/hybrid) [hybrid]: ").strip().lower()
-    if scan_type_str not in ("nmap", "openvas", "hybrid", ""):
+    scan_type_str = input("Scan type? (nmap/openvas/nessus/burp/hybrid) [hybrid]: ").strip().lower()
+    if scan_type_str not in ("nmap", "openvas", "nessus", "burp", "hybrid", ""):
         print("Invalid scan type. Defaulting to 'hybrid'.")
         scan_type_str = "hybrid"
     if not scan_type_str:
@@ -1040,10 +1294,9 @@ if __name__ == "__main__":
     try:
         scan_type = ScanType[scan_type_str.upper()]
     except KeyError:
-        logger.error(f"Invalid scan type: {scan_type_str}. Supported types are: nmap, openvas, hybrid.")
+        logger.error(f"Invalid scan type: {scan_type_str}. Supported types are: nmap, openvas, nessus, burp, hybrid.")
         sys.exit(1)
 
-    # Summary banner
     print("\n" + "=" * 60)
     print("SCAN SUMMARY".center(60))
     print("=" * 60)
@@ -1054,7 +1307,6 @@ if __name__ == "__main__":
 
     scanner = AdvancedVulnerabilityScanner()
 
-    # Initial validation and cleanup of target input for logging/display
     parsed_target = target_input
     if target_input.startswith(('http://', 'https://')):
         parsed_target = urlparse(target_input).netloc.split(':')[0]

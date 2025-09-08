@@ -1,113 +1,741 @@
-<!doctype html>
+```html
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; connect-src 'self' ws: wss:; img-src 'self' data:; object-src 'none'; base-uri 'self';">
     <title>Vulnerability Scanner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Highlight.js for JSON syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <!-- Socket.IO for WebSocket progress updates -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
     <style>
-        body { background: #f8f9fa; }
-        .container { max-width: 700px; margin-top: 40px; }
-        .spinner-border { display: none; }
-        pre { background: #222; color: #eee; padding: 1em; border-radius: 5px; }
-        .result-section { margin-bottom: 1.5em; }
+        /* Cybersecurity-themed background */
+        body {
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3d 100%);
+            background-attachment: fixed;
+            color: #e2e8f0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Digital grid overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M0 0h40v40H0z" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/><path d="M0 0h40m0 0v40" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/></svg>') repeat;
+            z-index: -1;
+        }
+        /* Glowing particles animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00f0ff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: glow 5s infinite;
+        }
+        @keyframes glow {
+            0% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 0.7; }
+            100% { opacity: 0; transform: translateY(100vh); }
+        }
+        /* Glitch effect for title */
+        .glitch:hover {
+            animation: glitch 0.3s linear;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+        /* Dark mode overrides */
+        .dark-mode {
+            background: linear-gradient(135deg, #1a1a3d 0%, #2a2a5a 100%);
+        }
+        .dark-mode .bg-white {
+            background-color: #2d3748;
+        }
+        .dark-mode .text-gray-900 {
+            color: #e2e8f0;
+        }
+        .dark-mode pre {
+            background-color: #2d3748 !important;
+        }
+        /* Progress bar with neon glow */
+        .loading-bar {
+            height: 4px;
+            background-color: rgba(0,240,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,240,255,0.5);
+        }
+        .loading-bar-fill {
+            height: 100%;
+            background-color: #00f0ff;
+            transition: width 0.3s ease-in-out;
+            box-shadow: 0 0 5px #00f0ff;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        /* Severity badges */
+        .severity-critical {
+            background-color: #dc2626; /* Tailwind bg-red-600 */
+            color: #fff; /* Tailwind text-white */
+        }
+        .dark-mode .severity-critical {
+            background-color: #991b1b; /* Tailwind dark:bg-red-800 */
+        }
+        .severity-high {
+            background-color: #ea580c; /* Tailwind bg-orange-600 */
+            color: #fff;
+        }
+        .dark-mode .severity-high {
+            background-color: #9a3412; /* Tailwind dark:bg-orange-800 */
+        }
+        .severity-medium {
+            background-color: #eab308; /* Tailwind bg-yellow-600 */
+            color: #fff;
+        }
+        .dark-mode .severity-medium {
+            background-color: #a16207; /* Tailwind dark:bg-yellow-800 */
+        }
+        .severity-low {
+            background-color: #2563eb; /* Tailwind bg-blue-600 */
+            color: #fff;
+        }
+        .dark-mode .severity-low {
+            background-color: #1e40af; /* Tailwind dark:bg-blue-800 */
+        }
+        .severity-informational, .severity-unknown {
+            background-color: #4b5563; /* Tailwind bg-gray-600 */
+            color: #fff;
+        }
+        .dark-mode .severity-informational,
+        .dark-mode .severity-unknown {
+            background-color: #1f2937; /* Tailwind dark:bg-gray-800 */
+        }
+        /* CVSS score bar */
+        .cvss-bar { height: 4px; background-color: #4a5568; border-radius: 2px; overflow: hidden; }
+        .cvss-fill { height: 100%; transition: width 0.3s ease; }
+        .cvss-critical { background-color: #ef4444; }
+        .cvss-high { background-color: #f59e0b; }
+        .cvss-medium { background-color: #eab308; }
+        .cvss-low { background-color: #3b82f6; }
+        .cvss-info { background-color: #6b7280; }
+        /* Shadow glow effect */
+        .shadow-glow {
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        /* Responsive table adjustments */
+        @media (max-width: 640px) {
+            .overflow-x-auto table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .overflow-x-auto th, .overflow-x-auto td {
+                min-width: 100px;
+            }
+            .overflow-x-auto td:nth-child(5) {
+                white-space: normal;
+                max-width: 150px;
+            }
+        }
+        /* Tooltip for full description */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
-<body>
-<div class="container shadow rounded bg-white p-4">
-    <h1 class="mb-4 text-center">🔎 Vulnerability Scanner</h1>
-    <form method="post" id="scanForm">
-        <div class="mb-3">
-            <label for="target" class="form-label">Target IP or Hostname</label>
-            <input type="text" class="form-control" id="target" name="target" required placeholder="e.g. 127.0.0.1">
+<body class="min-h-screen transition-colors duration-300">
+    <!-- Particles for cyber effect -->
+    <div class="particles">
+        <div class="particle" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 15%; animation-delay: 0.5s;"></div>
+        <div class="particle" style="left: 25%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 35%; animation-delay: 1.5s;"></div>
+        <div class="particle" style="left: 45%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 55%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 65%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 75%; animation-delay: 3.5s;"></div>
+        <div class="particle" style="left: 85%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 95%; animation-delay: 4.5s;"></div>
+    </div>
+
+    <div class="container mx-auto max-w-4xl p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-cyan-400 glitch flex items-center">
+                <span class="mr-2">🔎</span> Vulnerability Scanner
+            </h1>
+            <button id="themeToggle" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-cyan-400" aria-label="Toggle dark mode">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="sunIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path id="moonIcon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                </svg>
+            </button>
         </div>
-        <div class="mb-3">
-            <label for="scan_type" class="form-label">Scan Type</label>
-            <select class="form-select" id="scan_type" name="scan_type">
-                <option value="nmap">Nmap (fast)</option>
-                <option value="openvas">OpenVAS (deep)</option>
-                <option value="hybrid" selected>Hybrid (recommended)</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="report_format" class="form-label">Report Format</label>
-            <select class="form-select" id="report_format" name="report_format">
-                <option value="console">Console</option>
-                <option value="json">JSON</option>
-                <option value="pdf">PDF</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Start Scan</button>
-        <div class="text-center mt-3">
-            <div class="spinner-border text-primary" id="loadingSpinner" role="status">
-                <span class="visually-hidden">Scanning...</span>
-            </div>
-        </div>
-    </form>
-    {% if error %}
-        <div class="alert alert-danger mt-4">{{ error }}</div>
-    {% endif %}
-    {% if result %}
-        <div class="alert alert-success mt-4">Scan completed!</div>
-        <div class="accordion" id="resultAccordion">
-            <div class="accordion-item result-section">
-                <h2 class="accordion-header" id="headingRaw">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRaw" aria-expanded="true" aria-controls="collapseRaw">
-                        Raw Scan Result (JSON)
-                    </button>
-                </h2>
-                <div id="collapseRaw" class="accordion-collapse collapse show" aria-labelledby="headingRaw" data-bs-parent="#resultAccordion">
-                    <div class="accordion-body">
-                        <pre>{{ result | tojson(indent=2) }}</pre>
-                    </div>
+
+        <!-- Scan Form -->
+        <div class="bg-gray-800 shadow-lg rounded-lg p-6 mb-6 fade-in">
+            <form id="scanForm" method="post" class="space-y-4">
+                <div>
+                    <label for="target" class="block text-sm font-medium text-cyan-400">Target IP or Hostname</label>
+                    <input type="text" id="target" name="target" value="{{ request.form.target | default('') | e }}" required 
+                           class="mt-1 block w-full rounded-md bg-gray-900 border-gray-600 text-white shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-500 focus:ring-opacity-50" 
+                           placeholder="e.g., 127.0.0.1 or example.com" aria-describedby="targetHelp">
+                    <p id="targetHelp" class="mt-1 text-sm text-red-500 hidden">Please enter a valid IP address or hostname.</p>
                 </div>
-            </div>
-            {% if result.results and result.results.nmap %}
-            <div class="accordion-item result-section">
-                <h2 class="accordion-header" id="headingNmap">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNmap" aria-expanded="false" aria-controls="collapseNmap">
-                        Nmap Results
-                    </button>
-                </h2>
-                <div id="collapseNmap" class="accordion-collapse collapse" aria-labelledby="headingNmap" data-bs-parent="#resultAccordion">
-                    <div class="accordion-body">
-                        <pre>{{ result.results.nmap | tojson(indent=2) }}</pre>
-                    </div>
+                <div>
+                    <label for="scan_arguments" class="block text-sm font-medium text-cyan-400">Additional Scan Arguments</label>
+                    <input type="text" id="scan_arguments" name="scan_arguments" value="{{ new_scan_arguments_field | default('') | e }}" 
+                           class="mt-1 block w-full rounded-md bg-gray-900 border-gray-600 text-white shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-500 focus:ring-opacity-50" 
+                           placeholder="e.g., -sV -p 80,443" aria-describedby="argumentsHelp">
+                    <p id="argumentsHelp" class="mt-1 text-sm text-gray-400">Optional: Specify additional scan parameters.</p>
                 </div>
-            </div>
-            {% endif %}
-            {% if result.results and result.results.openvas %}
-            <div class="accordion-item result-section">
-                <h2 class="accordion-header" id="headingOpenVAS">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOpenVAS" aria-expanded="false" aria-controls="collapseOpenVAS">
-                        OpenVAS Results
-                    </button>
-                </h2>
-                <div id="collapseOpenVAS" class="accordion-collapse collapse" aria-labelledby="headingOpenVAS" data-bs-parent="#resultAccordion">
-                    <div class="accordion-body">
-                        <pre>{{ result.results.openvas | tojson(indent=2) }}</pre>
-                    </div>
+                <div>
+                    <label for="scan_type" class="block text-sm font-medium text-cyan-400">Scan Type</label>
+                    <select id="scan_type" name="scan_type" class="mt-1 block w-full rounded-md bg-gray-900 border-gray-600 text-white shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-500 focus:ring-opacity-50">
+                        <option value="nmap" {% if request.form.scan_type == 'nmap' %}selected{% endif %}>Nmap (Fast Service Scan)</option>
+                        <option value="openvas" {% if request.form.scan_type == 'openvas' %}selected{% endif %}>OpenVAS (Deep Authenticated Scan)</option>
+                        <option value="nessus" {% if request.form.scan_type == 'nessus' %}selected{% endif %}>Nessus (Comprehensive Vuln Scan)</option>
+                        <option value="burp" {% if request.form.scan_type == 'burp' %}selected{% endif %}>Burp Suite (Web App Scan)</option>
+                        <option value="hybrid" {% if request.form.scan_type == 'hybrid' or not request.form.scan_type %}selected{% endif %}>Hybrid (All Enabled Scanners - Recommended)</option>
+                    </select>
                 </div>
+                <div>
+                    <label for="report_format" class="block text-sm font-medium text-cyan-400">Report Format</label>
+                    <select id="report_format" name="report_format" class="mt-1 block w-full rounded-md bg-gray-900 border-gray-600 text-white shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-500 focus:ring-opacity-50">
+                        <option value="console" {% if report_format == 'console' %}selected{% endif %}>Console (Detailed Text)</option>
+                        <option value="json" {% if report_format == 'json' %}selected{% endif %}>JSON (Raw Data)</option>
+                        <option value="pdf" {% if report_format == 'pdf' %}selected{% endif %}>PDF (Professional Report)</option>
+                    </select>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" id="startScanBtn" class="flex-1 bg-cyan-600 text-white py-2 px-4 rounded-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-colors shadow-glow">
+                        Start Scan
+                    </button>
+                    <button type="button" id="cancelScanBtn" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors shadow-glow hidden">
+                        Cancel Scan
+                    </button>
+                </div>
+            </form>
+
+            <!-- Progress Bar -->
+            <div id="progressSection" class="mt-4 hidden">
+                <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-cyan-400">Scan Progress</span>
+                    <span id="progressPercentage" class="text-sm font-medium text-cyan-400">0%</span>
+                </div>
+                <div class="loading-bar">
+                    <div id="progressBar" class="loading-bar-fill" style="width: 0%"></div>
+                </div>
+                <p id="progressMessage" class="mt-2 text-sm text-gray-400">Initializing...</p>
             </div>
-            {% endif %}
         </div>
-        {% if pdf_generated %}
-            <div class="mt-3">
-                <a href="{{ url_for('download_pdf') }}" class="btn btn-success">
-                    Download PDF Report
-                </a>
+
+        <!-- Error Message -->
+        {% if error %}
+            <div class="bg-red-900 border-l-4 border-red-500 text-red-200 p-4 mb-6 rounded fade-in" role="alert">
+                <div class="flex justify-between">
+                    <p>{{ error | e }} (Report Format: {{ report_format | e }})</p>
+                    <button class="text-red-200 hover:text-red-400" onclick="this.parentElement.parentElement.remove()" aria-label="Dismiss error">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         {% endif %}
+
+        <!-- Scan Results -->
+        {% if result %}
+            <div class="bg-gray-800 shadow-lg rounded-lg p-6 mb-6 fade-in">
+                <div class="flex items-center mb-4">
+                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <h2 class="text-xl font-semibold text-cyan-400">Scan Completed!</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Vulnerabilities Summary -->
+                    <div class="border border-gray-600 rounded-lg">
+                        <button class="w-full text-left bg-gray-700 px-4 py-3 text-sm font-medium text-cyan-400 rounded-t-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" 
+                                type="button" data-toggle="vulnsSummary" aria-expanded="true" aria-controls="vulnsSummary" aria-label="Toggle Vulnerabilities Summary">
+                            Vulnerabilities Summary (Severities & Scores)
+                        </button>
+                        <div id="vulnsSummary" class="p-4">
+                            <div id="vulnsTableContainer">
+                                <p class="text-gray-400 italic">Parsing vulnerabilities...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raw Scan Result -->
+                    <div class="border border-gray-600 rounded-lg">
+                        <button class="w-full text-left bg-gray-700 px-4 py-3 text-sm font-medium text-cyan-400 rounded-t-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" 
+                                type="button" data-toggle="rawResult" aria-expanded="false" aria-controls="rawResult" aria-label="Toggle Raw Scan Result">
+                            Raw Scan Result (JSON)
+                        </button>
+                        <div id="rawResult" class="p-4 hidden">
+                            <div class="flex justify-end mb-2">
+                                <button id="copyRawJson" class="bg-cyan-600 text-white py-1 px-3 rounded-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors">
+                                    Copy JSON
+                                </button>
+                            </div>
+                            <pre><code class="language-json">{{ result | tojson(indent=2) | e }}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Nmap Results -->
+                    {% if result.results and result.results.nmap %}
+                    <div class="border border-gray-600 rounded-lg">
+                        <button class="w-full text-left bg-gray-700 px-4 py-3 text-sm font-medium text-cyan-400 rounded-t-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" 
+                                type="button" data-toggle="nmapResult" aria-expanded="false" aria-controls="nmapResult" aria-label="Toggle Nmap Results">
+                            Nmap Results
+                        </button>
+                        <div id="nmapResult" class="p-4 hidden">
+                            <pre><code class="language-json">{{ result.results.nmap | tojson(indent=2) | e }}</code></pre>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- OpenVAS Results -->
+                    {% if result.results and result.results.openvas %}
+                    <div class="border border-gray-600 rounded-lg">
+                        <button class="w-full text-left bg-gray-700 px-4 py-3 text-sm font-medium text-cyan-400 rounded-t-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" 
+                                type="button" data-toggle="openvasResult" aria-expanded="false" aria-controls="openvasResult" aria-label="Toggle OpenVAS Results">
+                            OpenVAS Results
+                        </button>
+                        <div id="openvasResult" class="p-4 hidden">
+                            <pre><code class="language-json">{{ result.results.openvas | tojson(indent=2) | e }}</code></pre>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Nessus Results -->
+                    {% if result.results and result.results.nessus %}
+                    <div class="border border-gray-600 rounded-lg">
+                        <button class="w-full text-left bg-gray-700 px-4 py-3 text-sm font-medium text-cyan-400 rounded-t-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" 
+                                type="button" data-toggle="nessusResult" aria-expanded="false" aria-controls="nessusResult" aria-label="Toggle Nessus Results">
+                            Nessus Results
+                        </button>
+                        <div id="nessusResult" class="p-4 hidden">
+                            <pre><code class="language-json">{{ result.results.nessus | tojson(indent=2) | e }}</code></pre>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Burp Suite Results -->
+                    {% if result.results and result.results.burp %}
+                    <div class="border border-gray-600 rounded-lg">
+                        <button class="w-full text-left bg-gray-700 px-4 py-3 text-sm font-medium text-cyan-400 rounded-t-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" 
+                                type="button" data-toggle="burpResult" aria-expanded="false" aria-controls="burpResult" aria-label="Toggle Burp Suite Results">
+                            Burp Suite Results
+                        </button>
+                        <div id="burpResult" class="p-4 hidden">
+                            <pre><code class="language-json">{{ result.results.burp | tojson(indent=2) | e }}</code></pre>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- PDF Download -->
+                    {% if pdf_generated %}
+                    <a href="{{ url_for('download_pdf') }}" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors shadow-glow">
+                        📄 Download PDF Report
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if result %}
+    <script id="scanResultJson" type="application/json">
+        {{ result | tojson | safe }}
+    </script>
     {% endif %}
-</div>
-<!-- Bootstrap 5 JS (for accordion) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Show spinner on form submit
-    document.getElementById('scanForm').addEventListener('submit', function() {
-        document.getElementById('loadingSpinner').style.display = 'inline-block';
+
+    <script>
+    // Initialize Highlight.js
+    document.addEventListener('DOMContentLoaded', () => {
+        hljs.highlightAll();
+        parseVulnerabilities();
+        initWebSocket();
     });
+
+    // WebSocket connection
+    function initWebSocket() {
+        const socket = io.connect(window.location.origin, {
+            transports: ['websocket', 'polling']
+        });
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        socket.on('progress', data => {
+            updateProgress(data.percentage, data.message);
+        });
+
+        socket.on('complete', () => {
+            updateProgress(100, 'Scan completed!');
+            clearInterval(window.fakeProgressInterval);
+            setTimeout(() => {
+                document.getElementById('progressSection').classList.add('hidden');
+                toggleScanButtons(false);
+            }, 2000);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+
+        socket.on('cancelled', () => {
+            updateProgress(0, 'Scan cancelled.');
+            clearInterval(window.fakeProgressInterval);
+            setTimeout(() => {
+                document.getElementById('progressSection').classList.add('hidden');
+                toggleScanButtons(false);
+            }, 1000);
+        });
+
+        window.socket = socket;
+    }
+
+    // Update progress function
+    function updateProgress(percentage, message) {
+        const progressBar = document.getElementById('progressBar');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const progressMessage = document.getElementById('progressMessage');
+
+        progressBar.style.width = `${percentage}%`;
+        progressPercentage.textContent = `${Math.round(percentage)}%`;
+        progressMessage.textContent = message || 'Processing...';
+    }
+
+    // Fake progress simulation
+    function startFakeProgress() {
+        let fakePercentage = 0;
+        window.fakeProgressInterval = setInterval(() => {
+            if (fakePercentage < 95) {  // Cap at 95% until real complete
+                fakePercentage += Math.random() * 5 + 1;  // Random increment for realism
+                fakePercentage = Math.min(fakePercentage, 95);
+                updateProgress(fakePercentage, 'Scanning in progress...');
+            }
+        }, 1000);  // Update every second
+    }
+
+    // Toggle start/cancel buttons and show progress
+    function toggleScanButtons(isScanning) {
+        const startBtn = document.getElementById('startScanBtn');
+        const cancelBtn = document.getElementById('cancelScanBtn');
+        const progressSection = document.getElementById('progressSection');
+
+        startBtn.classList.toggle('hidden', isScanning);
+        cancelBtn.classList.toggle('hidden', !isScanning);
+        progressSection.classList.toggle('hidden', !isScanning);
+    }
+
+    // Dark mode toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        sunIcon.classList.toggle('hidden');
+        moonIcon.classList.toggle('hidden');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+    }
+
+    // Form validation
+    const targetInput = document.getElementById('target');
+    const targetHelp = document.getElementById('targetHelp');
+    targetInput.addEventListener('input', () => {
+        const value = targetInput.value.trim();
+        const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        const hostnameRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$/;
+        if (value && (ipRegex.test(value) || hostnameRegex.test(value) || urlRegex.test(value))) {
+            targetInput.classList.remove('border-red-500');
+            targetHelp.classList.add('hidden');
+        } else {
+            targetInput.classList.add('border-red-500');
+            targetHelp.classList.remove('hidden');
+        }
+    });
+
+    // Prevent form submission if target is invalid and start scan
+    document.getElementById('scanForm').addEventListener('submit', (e) => {
+        const value = targetInput.value.trim();
+        const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        const hostnameRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$/;
+        if (!value || !(ipRegex.test(value) || hostnameRegex.test(value) || urlRegex.test(value))) {
+            e.preventDefault();
+            targetInput.classList.add('border-red-500');
+            targetHelp.classList.remove('hidden');
+        } else {
+            e.preventDefault();  // Prevent default submit to handle via JS
+            // Simulate form submission (assuming backend handles via POST)
+            fetch(window.location.href, {
+                method: 'POST',
+                body: new FormData(document.getElementById('scanForm'))
+            }).then(() => {
+                toggleScanButtons(true);
+                updateProgress(0, 'Initializing...');
+                startFakeProgress();
+            }).catch(error => {
+                console.error('Scan start error:', error);
+                updateProgress(0, 'Error starting scan.');
+            });
+
+            if (window.socket && window.socket.connected) {
+                console.log('Socket connected, proceeding with scan');
+            } else {
+                console.log('Socket not connected, attempting to reconnect');
+                initWebSocket();
+            }
+        }
+    });
+
+    // Cancel scan button
+    document.getElementById('cancelScanBtn').addEventListener('click', () => {
+        if (window.socket) {
+            window.socket.emit('cancel_scan');  // Assume backend listens to 'cancel_scan'
+        }
+        updateProgress(0, 'Cancelling scan...');
+        clearInterval(window.fakeProgressInterval);
+        setTimeout(() => {
+            toggleScanButtons(false);
+        }, 1000);
+    });
+
+    // Accordion functionality
+    document.querySelectorAll('[data-toggle]').forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.getAttribute('data-toggle');
+            const target = document.getElementById(targetId);
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            document.querySelectorAll('[data-toggle]').forEach(btn => {
+                const tgt = document.getElementById(btn.getAttribute('data-toggle'));
+                tgt.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+            target.classList.toggle('hidden', isExpanded);
+            button.setAttribute('aria-expanded', !isExpanded);
+        });
+    });
+
+    // Normalize severity for consistent handling
+    function normalizeSeverity(severity) {
+        if (!severity) return 'Unknown';
+        const sev = typeof severity === 'string' ? severity : severity.value || 'Unknown';
+        const normalized = sev.charAt(0).toUpperCase() + sev.slice(1).toLowerCase();
+        return ['Critical', 'High', 'Medium', 'Low', 'Informational'].includes(normalized) ? normalized : 'Unknown';
+    }
+    
+    // Parse and display vulnerabilities summary
+    function parseVulnerabilities() {
+        const container = document.getElementById('vulnsTableContainer');
+        const resultJsonElement = document.getElementById('scanResultJson');
+        
+        if (!resultJsonElement) {
+            container.innerHTML = '<p class="text-gray-400 italic">No scan results available.</p>';
+            return;
+        }
+        
+        let result;
+        try {
+            result = JSON.parse(resultJsonElement.textContent);
+        } catch (e) {
+            console.error('Error parsing JSON result:', e);
+            container.innerHTML = '<p class="text-red-500 italic">Error parsing scan results. See raw JSON for details.</p>';
+            return;
+        }
+
+        if (!result || !result.results) {
+            container.innerHTML = '<p class="text-gray-400 italic">No scan results available.</p>';
+            return;
+        }
+
+        let allVulns = [];
+        let severityCounts = { Critical: 0, High: 0, Medium: 0, Low: 0, Informational: 0, Unknown: 0 };
+
+        try {
+            // Parse Nmap vulnerabilities
+            if (result.results.nmap && result.results.nmap.hosts) {
+                result.results.nmap.hosts.forEach(host => {
+                    if (host.vulnerabilities) {
+                        host.vulnerabilities.forEach(vuln => {
+                            const severity = normalizeSeverity(vuln.severity);
+                            allVulns.push({
+                                source: 'Nmap',
+                                cve: vuln.cve || 'N/A',
+                                severity: severity,
+                                score: parseFloat(vuln.cvss) || 0,
+                                description: vuln.description || 'No description',
+                                port: vuln.port || 'N/A'
+                            });
+                            severityCounts[severity] = (severityCounts[severity] || 0) + 1;
+                        });
+                    }
+                });
+            }
+
+            // Parse OpenVAS findings
+            if (result.results.openvas && result.results.openvas.findings) {
+                result.results.openvas.findings.forEach(finding => {
+                    const severity = normalizeSeverity(finding.severity);
+                    allVulns.push({
+                        source: 'OpenVAS',
+                        cve: finding.cves ? finding.cves.join(', ') : 'N/A',
+                        severity: severity,
+                        score: parseFloat(finding.cvss) || 0,
+                        description: finding.description || 'No description',
+                        port: finding.port || 'N/A'
+                    });
+                    severityCounts[severity] = (severityCounts[severity] || 0) + 1;
+                });
+            }
+
+            // Parse Nessus vulnerabilities
+            if (result.results.nessus && result.results.nessus.vulnerabilities) {
+                result.results.nessus.vulnerabilities.forEach(vuln => {
+                    const severity = normalizeSeverity(vuln.severity);
+                    allVulns.push({
+                        source: 'Nessus',
+                        cve: vuln.plugin_id || 'N/A',
+                        severity: severity,
+                        score: parseFloat(vuln.cvss) || 0,
+                        description: vuln.description || 'No description',
+                        port: 'N/A'
+                    });
+                    severityCounts[severity] = (severityCounts[severity] || 0) + 1;
+                });
+            }
+
+            // Parse Burp issues
+            if (result.results.burp && result.results.burp.issues) {
+                result.results.burp.issues.forEach(issue => {
+                    const severity = normalizeSeverity(issue.severity);
+                    allVulns.push({
+                        source: 'Burp',
+                        cve: 'N/A',
+                        severity: severity,
+                        score: parseFloat(issue.cvss) || 0,
+                        description: issue.description || 'No description',
+                        port: 'N/A'
+                    });
+                    severityCounts[severity] = (severityCounts[severity] || 0) + 1;
+                });
+            }
+
+            // Generate table
+            if (allVulns.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 italic">No vulnerabilities found in the scan results.</p>';
+                return;
+            }
+
+            // Severity counts summary
+            let countsHtml = '<div class="mb-4 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-2">';
+            Object.entries(severityCounts).forEach(([sev, count]) => {
+                if (count > 0) {
+                    const badgeClass = `severity-${sev.toLowerCase()}`;
+                    countsHtml += `<span class="px-2 py-1 rounded-full text-xs font-medium ${badgeClass}">${sev}: ${count}</span>`;
+                }
+            });
+            countsHtml += '</div>';
+
+            // Vulnerabilities table
+            let tableHtml = countsHtml + '<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-600"><thead class="bg-gray-700"><tr><th class="px-4 py-3 text-left text-xs font-medium text-cyan-400 uppercase tracking-wider">Source</th><th class="px-4 py-3 text-left text-xs font-medium text-cyan-400 uppercase tracking-wider">CVE/ID</th><th class="px-4 py-3 text-left text-xs font-medium text-cyan-400 uppercase tracking-wider">Severity</th><th class="px-4 py-3 text-left text-xs font-medium text-cyan-400 uppercase tracking-wider">Score (CVSS)</th><th class="px-4 py-3 text-left text-xs font-medium text-cyan-400 uppercase tracking-wider">Description</th><th class="px-4 py-3 text-left text-xs font-medium text-cyan-400 uppercase tracking-wider">Port</th></tr></thead><tbody class="bg-gray-800 divide-y divide-gray-600">';
+
+            allVulns.sort((a, b) => (b.score || 0) - (a.score || 0));
+            allVulns.forEach(vuln => {
+                const sevClass = `severity-${vuln.severity.toLowerCase()}`;
+                const scoreClass = vuln.score >= 9 ? 'cvss-critical' : vuln.score >= 7 ? 'cvss-high' : vuln.score >= 4 ? 'cvss-medium' : vuln.score > 0 ? 'cvss-low' : 'cvss-info';
+                const shortDesc = vuln.description.substring(0, 100) + (vuln.description.length > 100 ? '...' : '');
+                tableHtml += `<tr><td class="px-4 py-3 text-sm font-medium text-white">${vuln.source}</td><td class="px-4 py-3 text-sm text-white">${vuln.cve}</td><td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-medium ${sevClass}">${vuln.severity}</span></td><td class="px-4 py-3 text-sm text-white"><div class="cvss-bar w-20"><div class="cvss-fill ${scoreClass}" style="width: ${Math.min((vuln.score / 10) * 100, 100)}%"></div></div> ${vuln.score.toFixed(1)}</td><td class="px-4 py-3 text-sm text-white"><div class="tooltip">${shortDesc}<span class="tooltiptext">${vuln.description}</span></div></td><td class="px-4 py-3 text-sm text-white">${vuln.port}</td></tr>`;
+            });
+
+            tableHtml += '</tbody></table></div>';
+            container.innerHTML = tableHtml;
+        } catch (e) {
+            console.error('Error parsing vulnerabilities:', e);
+            container.innerHTML = '<p class="text-red-500 italic">Error parsing vulnerabilities. See raw JSON for details.</p>';
+        }
+    }
+
+    // Copy raw JSON to clipboard
+    const copyRawJsonBtn = document.getElementById('copyRawJson');
+    if (copyRawJsonBtn) {
+        copyRawJsonBtn.addEventListener('click', () => {
+            const rawJson = document.querySelector('#rawResult pre code').textContent;
+            navigator.clipboard.writeText(rawJson).then(() => {
+                copyRawJsonBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyRawJsonBtn.textContent = 'Copy JSON';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        });
+    }
 </script>
 </body>
 </html>
+```

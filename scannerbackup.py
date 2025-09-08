@@ -18,7 +18,7 @@ from fpdf.enums import XPos, YPos
 import socket
 import getpass
 
-from scanner.utils.openvas_client import OpenVASClient
+from scanner1.utils.openvas_client import OpenVASClient
 
 # Initialize logging
 logging.basicConfig(
