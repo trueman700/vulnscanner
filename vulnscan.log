@@ -1854,3 +1854,51 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: write() before start_response
 2025-09-08 22:02:40,937 - INFO - Client client_20250908_215051_00bc3af5bdc8ed79 connected
+2025-09-22 14:03:27,263 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.151:5000
+2025-09-22 14:03:27,271 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-22 14:03:27,273 - INFO -  * Restarting with stat
+2025-09-22 14:03:34,236 - WARNING -  * Debugger is active!
+2025-09-22 14:03:34,347 - INFO -  * Debugger PIN: 395-628-749
+2025-09-22 14:03:53,750 - INFO - New client session: client_20250922_140353_383e38bb6cc1e9f0
+2025-09-22 14:03:54,258 - INFO - 127.0.0.1 - - [22/Sep/2025 14:03:54] "GET / HTTP/1.1" 200 -
+2025-09-22 14:04:00,912 - INFO - 127.0.0.1 - - [22/Sep/2025 14:04:00] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-09-22 14:04:42,935 - INFO - Initiating scan for client client_20250922_140353_383e38bb6cc1e9f0: target=mmu.ac.ke, type=hybrid, format=pdf
+2025-09-22 14:04:43,069 - INFO - Client client_20250922_140353_383e38bb6cc1e9f0 connected
+2025-09-22 14:04:43,553 - INFO - Gemini AI model initialized successfully.
+2025-09-22 14:04:46,830 - ERROR - OpenVAS client initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-09-22 14:04:46,831 - ERROR - OpenVAS initialization failed: Could not establish connection or authenticate using any method. Please check GVM services, socket paths, or TLS configuration.
+2025-09-22 14:04:46,832 - INFO - Nessus not configured (missing NESSUS_URL, NESSUS_ACCESS_KEY, NESSUS_SECRET_KEY, or NESSUS_POLICY_UUID)
+2025-09-22 14:04:46,842 - INFO - Burp Suite not configured (missing BURP_API_URL)
+2025-09-22 14:04:46,845 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 0% - Starting scan
+2025-09-22 14:04:46,870 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 5% - Target validated
+2025-09-22 14:04:46,877 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 10% - Starting Nmap scan
+2025-09-22 14:04:46,880 - INFO - Starting Nmap scan with args: -sV -T4 --open --script vulners,vuln,http-vuln*,ssl-*
+2025-09-22 14:04:46,894 - INFO - 127.0.0.1 - - [22/Sep/2025 14:04:46] "POST / HTTP/1.1" 200 -
+2025-09-22 14:13:01,182 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 30% - Nmap scan completed
+2025-09-22 14:13:01,183 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 35% - Performing enhanced vulnerability analysis
+2025-09-22 14:13:01,187 - INFO - Performing enhanced analysis for 41.204.160.15
+2025-09-22 14:13:01,190 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 40% - Enhanced vulnerability analysis completed
+2025-09-22 14:13:01,190 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 97% - Running supplemental checks
+2025-09-22 14:13:01,192 - INFO - Running supplemental checks...
+2025-09-22 14:13:01,812 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 99% - Finalizing results
+2025-09-22 14:13:01,817 - INFO - Progress for client_20250922_140353_383e38bb6cc1e9f0: 100% - Scan completed
+2025-09-22 14:13:01,927 - INFO - PDF report generated: scan_report_scan_20250922_140443.pdf
+2025-09-22 14:13:03,359 - INFO - 127.0.0.1 - - [22/Sep/2025 14:13:03] "GET / HTTP/1.1" 200 -
+2025-09-22 14:13:03,519 - INFO - Client client_20250922_140353_383e38bb6cc1e9f0 disconnected
+2025-09-22 14:13:04,872 - INFO - Client client_20250922_140353_383e38bb6cc1e9f0 connected
+2025-09-22 14:13:43,390 - INFO - 127.0.0.1 - - [22/Sep/2025 14:13:43] "GET /download_pdf HTTP/1.1" 200 -
+2025-09-22 15:49:47,308 - INFO - Client client_20250922_140353_383e38bb6cc1e9f0 disconnected
+2025-09-22 15:49:47,392 - INFO - 127.0.0.1 - - [22/Sep/2025 15:49:47] "[35m[1mGET /socket.io/?EIO=4&transport=websocket HTTP/1.1[0m" 500 -
+2025-09-22 15:49:47,468 - ERROR - Error on request:
+Traceback (most recent call last):
+  File "/home/gig/Documents/musomi]/Project1/vulnerability-scanner/venv4/lib/python3.12/site-packages/werkzeug/serving.py", line 370, in run_wsgi
+    execute(self.server.app)
+  File "/home/gig/Documents/musomi]/Project1/vulnerability-scanner/venv4/lib/python3.12/site-packages/werkzeug/serving.py", line 336, in execute
+    write(b"")
+  File "/home/gig/Documents/musomi]/Project1/vulnerability-scanner/venv4/lib/python3.12/site-packages/werkzeug/serving.py", line 261, in write
+    assert status_set is not None, "write() before start_response"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: write() before start_response

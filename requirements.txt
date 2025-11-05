@@ -1,42 +1,56 @@
-### Core Security Scanning ###
-python-nmap
-python-gvm
-requests
-urllib3
-dnspython
+# === Core Scanning & Integration ===
+python-nmap==0.7.1
+requests==2.31.0
+urllib3==2.0.4
 
-### Vulnerability Intelligence APIs (optional, only if used) ###
-vulners
-nvdlib
+# === Nessus API Integration ===
+tenable-io==1.3.0  # Official Tenable Nessus Python SDK
 
-### PDF Reporting ###
-fpdf2
+# === Burp Suite Integration (via REST API or headless mode) ===
+# Note: Burp Suite Professional API is REST-based; this is a helper for HTTP interactions
+burp-rest-api==0.1.2  # If using Burp's REST API extension
 
-### Network Security (optional, only if used) ###
-scapy
-paramiko
-impacket
+# === Web Framework (Flask) ===
+flask==2.3.3
+flask-socketio==5.3.6  # Real-time updates
+flask-cors==4.0.0
 
-### CLI & Console ###
-rich
-python-dotenv
+# === Database ===
+psycopg2-binary==2.9.7  # PostgreSQL adapter
+sqlalchemy==2.0.20
 
-### Web Interface ###
-flask
+# === Data Processing & Serialization ===
+pandas==2.0.3
+lxml==4.9.3
 
-### Shodan API (optional, only if used) ###
-shodan
+# === Vulnerability Intelligence (NVD API) ===
+nvdlib==0.5.0  # NVD API client
 
-### Data Processing & Visualization (optional, only if used) ###
-pandas
-numpy
-lxml
-matplotlib
-seaborn
+# === Reporting ===
+fpdf2==2.7.4  # PDF reports
 
-### Development & Testing ###
-pytest
-pytest-cov
-black
-bandit
-safety
+# === Network Security (Optional) ===
+scapy==2.5.0
+paramiko==3.2.0
+
+# === CLI & Logging ===
+rich==13.5.2
+python-dotenv==1.0.0
+
+# === Authentication & Security ===
+pyjwt==2.8.0
+bcrypt==4.0.1
+
+# === Testing ===
+pytest==7.4.0
+pytest-cov==4.1.0
+bandit==1.7.5
+safety==2.3.5
+
+# === Code Quality ===
+black==23.7.0
+flake8==6.0.0
+
+# === Containerization (Docker support) ===
+docker==6.1.3
+gunicorn==21.2.0  # WSGI server for production

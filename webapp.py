@@ -30,7 +30,7 @@ results_storage = {}
 
 def get_progress_callback(client_id):
     def callback(percentage, message):
-        logger.info(f"Progress for {client_id}: {percentage}% - {message}")
+        logger.info(f"Progress for {client_id }: {percentage}% - {message}")
         socketio.emit('progress', {'percentage': percentage, 'message': message}, room=client_id)
     return callback
 
